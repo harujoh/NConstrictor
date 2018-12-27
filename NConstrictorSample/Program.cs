@@ -43,14 +43,14 @@ namespace NConstrictorSample
             //関数の結果を表示する
             py.WriteLine("print(x)");
 
-            Console.WriteLine("\n> pyBufferGen[0] += 10 From C#");
+            Console.WriteLine("\n> pyBuffer[0] += 10 From C#");
 
             //Pythonの値をC#から変更するクラスを作成
-            PyBufferGen<TestType> pyBufferGen = new PyBufferGen<TestType>("x");
-            pyBufferGen[0] += 10;
+            PyBuffer<TestType> pyBuffer = new PyBuffer<TestType>("x");
+            pyBuffer[0] += 10;
 
             //後片付けが必要
-            pyBufferGen.Dispose();
+            pyBuffer.Dispose();
 
             //c#から変更した結果を表示する
             py.WriteLine("print(x)");

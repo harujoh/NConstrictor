@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace NConstrictor
 {
-    public unsafe ref struct PyBufferGen<T>
+    public unsafe ref struct PyBuffer<T>
     {
-        public PyBuffer Buf;
+        public PyBufferRaw Buf;
         public Span<T> Data;
 
         public T this[int i]
@@ -24,7 +24,7 @@ namespace NConstrictor
             get { return Buf.BufPtr; }
         }
 
-        public PyBufferGen(string name)
+        public PyBuffer(string name)
         {
             IntPtr targetObj = PyObject.GetAttr(name);
 
@@ -33,14 +33,14 @@ namespace NConstrictor
                 throw new Exception("対象の変数" + name + "が見つかりませんでした");
             }
 
-            view = Marshal.AllocCoTaskMem(Marshal.SizeOf(typeof(PyBuffer)));
+            view = Marshal.AllocCoTaskMem(Marshal.SizeOf(typeof(PyBufferRaw)));
 
             if (PyObject.GetBuffer(targetObj, view, PyConsts.BUF_C_CONTIGUOUS | PyConsts.BUF_FORMAT) != 0)
             {
                 throw new Exception();
             }
 
-            Buf = (PyBuffer)Marshal.PtrToStructure(view, typeof(PyBuffer));
+            Buf = (PyBufferRaw)Marshal.PtrToStructure(view, typeof(PyBufferRaw));
 
             Shape = new int[Buf.Ndim];
             Marshal.Copy(Buf.Shape, Shape, 0, Shape.Length);

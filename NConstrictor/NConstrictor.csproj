@@ -63,9 +63,9 @@
     <Compile Include="NumpyFunctions\NpConsts.cs" />
     <Compile Include="NumpyFunctions\NumPy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PyBufferGen.cs" />
+    <Compile Include="PyBuffer.cs" />
     <Compile Include="PythonFunctions\Py.cs" />
-    <Compile Include="PythonFunctions\PyBuffer.cs" />
+    <Compile Include="PythonFunctions\PyBufferRaw.cs" />
     <Compile Include="PythonFunctions\PyCapsule.cs" />
     <Compile Include="PythonFunctions\PyConsts.cs" />
     <Compile Include="PythonFunctions\PyEval.cs" />

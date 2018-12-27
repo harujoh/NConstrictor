@@ -65,9 +65,9 @@ namespace NConstrictor
 
         public T[] Get<T>(string name)
         {
-            PyBufferGen<T> pyBufferGen = new PyBufferGen<T>(name);
-            T[] resut = pyBufferGen.Data.ToArray();
-            pyBufferGen.Dispose();
+            PyBuffer<T> pyBuffer = new PyBuffer<T>(name);
+            T[] resut = pyBuffer.Data.ToArray();
+            pyBuffer.Dispose();
             return resut;
         }
 
