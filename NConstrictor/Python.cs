@@ -4,11 +4,11 @@ namespace NConstrictor
 {
     public unsafe class Python
     {
-        public bool IsOutlog;
+        public bool IsPrintLog;
 
-        public Python(bool isOutlog = false)
+        public Python(bool isPrintLog = false)
         {
-            IsOutlog = isOutlog;
+            IsPrintLog = isPrintLog;
             Py.Initialize();
             NumPy.Initialize();
         }
@@ -31,8 +31,8 @@ namespace NConstrictor
 
                 fixed (void* address = intArray)
                 {
-                    IntPtr npAarray = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, Dtype.Int32, array.Rank, dims, null, address, NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
-                    PyObject.SetAttr(name, npAarray);
+                    IntPtr npArray = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, Dtype.Int32, array.Rank, dims, null, address, NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
+                    PyObject.SetAttr(name, npArray);
                 }
             }
             else if(typeof(T) == typeof(float))
@@ -57,23 +57,27 @@ namespace NConstrictor
 
                 fixed (void* address = intArray)
                 {
-                    IntPtr npAarray = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, Dtype.Float64, array.Rank, dims, null, address, NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
-                    PyObject.SetAttr(name, npAarray);
+                    IntPtr npArray = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, Dtype.Float64, array.Rank, dims, null, address, NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
+                    PyObject.SetAttr(name, npArray);
                 }
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
         }
 
         public T[] Get<T>(string name)
         {
             PyBuffer<T> pyBuffer = new PyBuffer<T>(name);
-            T[] resut = pyBuffer.Data.ToArray();
+            T[] result = pyBuffer.Data.ToArray();
             pyBuffer.Dispose();
-            return resut;
+            return result;
         }
 
         public void WriteLine(string code)
         {
-            if(IsOutlog)Console.WriteLine(">>> " + code);
+            if(IsPrintLog)Console.WriteLine(">>> " + code);
             PyRun.SimpleString(code);
         }
     }

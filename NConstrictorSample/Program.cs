@@ -1,7 +1,8 @@
 ﻿using System;
 using NConstrictor;
-//using TestType = System.Int32;
+
 using TestType = System.Single;
+//using TestType = System.Int32;
 //using TestType = System.Double;
 
 namespace NConstrictorSample
