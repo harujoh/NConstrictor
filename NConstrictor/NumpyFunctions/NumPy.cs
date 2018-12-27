@@ -16,7 +16,7 @@ namespace NConstrictor
         public delegate IntPtr PyArrayFromBufferDelegate(IntPtr buf, IntPtr dtype, int count, int offset);
         public static PyArrayFromBufferDelegate PyArrayFromBuffer;
 
-        public unsafe delegate IntPtr PyArrayNewFromDescrDelegate(IntPtr subtype, IntPtr descr, int nd, long[] dims, long[] strides, void* data, int flags, IntPtr obj);
+        public delegate IntPtr PyArrayNewFromDescrDelegate(IntPtr subtype, IntPtr descr, int nd, long[] dims, long[] strides, IntPtr data, int flags, IntPtr obj);
         public static PyArrayNewFromDescrDelegate PyArrayNewFromDescr;
 
         public static IntPtr PyArrayType;

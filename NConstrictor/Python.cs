@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace NConstrictor
 {
@@ -22,49 +24,12 @@ namespace NConstrictor
                 dims[i] = array.GetLength(i);
             }
 
-            if (typeof(T) == typeof(int))
-            {
-                //一次元の長さの配列を用意
-                int[] intArray = new int[array.Length];
-                //一次元化
-                Buffer.BlockCopy(array, 0, intArray, 0, sizeof(int) * intArray.Length);
+            GCHandle handle = GCHandle.Alloc(array, GCHandleType.Pinned);
 
-                fixed (void* address = intArray)
-                {
-                    IntPtr npArray = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, Dtype.Int32, array.Rank, dims, null, address, NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
-                    PyObject.SetAttr(name, npArray);
-                }
-            }
-            else if(typeof(T) == typeof(float))
-            {
-                //一次元の長さの配列を用意
-                float[] intArray = new float[array.Length];
-                //一次元化
-                Buffer.BlockCopy(array, 0, intArray, 0, sizeof(float) * intArray.Length);
+            IntPtr npArray = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype<T>(), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
+            PyObject.SetAttr(name, npArray);
 
-                fixed (void* address = intArray)
-                {
-                    IntPtr npAarray = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, Dtype.Float32, array.Rank, dims, null, address, NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
-                    PyObject.SetAttr(name, npAarray);
-                }
-            }
-            else if (typeof(T) == typeof(double))
-            {
-                //一次元の長さの配列を用意
-                double[] intArray = new double[array.Length];
-                //一次元化
-                Buffer.BlockCopy(array, 0, intArray, 0, sizeof(double) * intArray.Length);
-
-                fixed (void* address = intArray)
-                {
-                    IntPtr npArray = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, Dtype.Float64, array.Rank, dims, null, address, NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
-                    PyObject.SetAttr(name, npArray);
-                }
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
+            handle.Free();
         }
 
         public T[] Get<T>(string name)
@@ -80,5 +45,26 @@ namespace NConstrictor
             if(IsPrintLog)Console.WriteLine(">>> " + code);
             PyRun.SimpleString(code);
         }
+
+        IntPtr GetDtype<T>()
+        {
+            if (typeof(T) == typeof(int))
+            {
+                return Dtype.Int32;
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                return Dtype.Float32;
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                return Dtype.Float64;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
     }
 }
