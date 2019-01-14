@@ -50,9 +50,6 @@ namespace NConstrictorSample
             PyBuffer<TestType> pyBuffer = new PyBuffer<TestType>("x");
             pyBuffer[2, 1] += 10;
 
-            //後片付けが必要
-            pyBuffer.Dispose();
-
             //c#から変更した結果を表示する
             py.WriteLine("print(x)");
 
