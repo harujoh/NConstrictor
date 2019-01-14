@@ -5,8 +5,8 @@ C#とPython間で高速にデータ通信を行うライブラリです
 
 ## できること
 - C#からPython内のNdArrayの値を”直接”変更する
-- PythonにC#の配列、多次元配列を送信
-- PythonのNdArrayをC#の配列として取得
+- PythonにC#の配列または多次元配列を送信
+- PythonのNdArrayをC#の配列または多次元配列として取得
 
 ## 動作原理
 - C#からCPythonのC-APIを呼び出す
