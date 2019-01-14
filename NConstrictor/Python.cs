@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace NConstrictor
 {
-    public unsafe class Python
+    public class Python
     {
         public bool IsPrintLog;
 
@@ -35,9 +34,7 @@ namespace NConstrictor
         public T[] Get<T>(string name)
         {
             PyBuffer<T> pyBuffer = new PyBuffer<T>(name);
-            T[] result = pyBuffer.Data.ToArray();
-            pyBuffer.Dispose();
-            return result;
+            return pyBuffer.Data.ToArray();
         }
 
         public void WriteLine(string code)
