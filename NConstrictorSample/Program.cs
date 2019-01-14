@@ -44,11 +44,11 @@ namespace NConstrictorSample
             //関数の結果を表示する
             py.WriteLine("print(x)");
 
-            Console.WriteLine("\n> pyBuffer[0] += 10 From C#");
+            Console.WriteLine("\n> pyBuffer[2, 1] += 10 From C#");
 
             //Pythonの値をC#から変更するクラスを作成
             PyBuffer<TestType> pyBuffer = new PyBuffer<TestType>("x");
-            pyBuffer[0] += 10;
+            pyBuffer[2, 1] += 10;
 
             //後片付けが必要
             pyBuffer.Dispose();
@@ -57,21 +57,13 @@ namespace NConstrictorSample
             py.WriteLine("print(x)");
 
             //計算したxをC#で取得
-            TestType[] resultX = py.Get<TestType>("x");
+            TestType[,] destArrayX = (TestType[,])py.Get<TestType>("x");
 
             //Pythonで宣言したyをC#で取得
-            TestType[] resultY = py.Get<TestType>("y");
+            TestType[,] destArrayY = (TestType[,])py.Get<TestType>("y");
 
-            //取得した値を転送する
-            TestType[,] destArrayX = new TestType[3, 4];
-            Buffer.BlockCopy(resultX, 0, destArrayX, 0, sizeof(TestType) * resultX.Length);
-
-            //取得した値を転送する
-            TestType[,] destArrayY = new TestType[3, 4];
-            Buffer.BlockCopy(resultY, 0, destArrayY, 0, sizeof(TestType) * resultY.Length);
-
-            Console.WriteLine("\n> Console.WriteLine(x[i,j]) from C#");
             //取得したXの中身を表示
+            Console.WriteLine("\n> Console.WriteLine(x[i,j]) from C#");
             for (int i = 0; i < destArrayX.GetLength(0); i++)
             {
                 for (int j = 0; j < destArrayX.GetLength(1); j++)
@@ -80,8 +72,8 @@ namespace NConstrictorSample
                 }
             }
 
-            Console.WriteLine("\n> Console.WriteLine(y[i,j]) from C#");
             //取得したYの中身を表示
+            Console.WriteLine("\n> Console.WriteLine(y[i,j]) from C#");
             for (int i = 0; i < destArrayY.GetLength(0); i++)
             {
                 for (int j = 0; j < destArrayY.GetLength(1); j++)
@@ -90,6 +82,7 @@ namespace NConstrictorSample
                 }
             }
 
+            Console.WriteLine("Done.");
             Console.Read();
         }
     }

@@ -8,18 +8,13 @@ namespace NConstrictor
     {
         private PyBufferRaw _pyBuffer;
 
-        internal Span<T> Data
+        public T this[params int[] i]
         {
-            get { return new Span<T>((void*)_pyBuffer.BufPtr, (int)(_pyBuffer.Len / _pyBuffer.ItemSize)); }
+            set { Unsafe.Write((void*)(_pyBuffer.BufPtr + GetLocalIndex(i) * Unsafe.SizeOf<T>()), value); }
+            get { return Unsafe.Read<T>((void*)(_pyBuffer.BufPtr + GetLocalIndex(i) * Unsafe.SizeOf<T>())); }
         }
 
-        public T this[int i]
-        {
-            set { Unsafe.Write((void*)(_pyBuffer.BufPtr + i * Unsafe.SizeOf<T>()), value); }
-            get { return Unsafe.Read<T>((void*)(_pyBuffer.BufPtr + i * Unsafe.SizeOf<T>())); }
-        }
-
-        public int[] Shape;
+        public long[] Shape;
 
         private readonly IntPtr _view;
 
@@ -43,8 +38,42 @@ namespace NConstrictor
 
             _pyBuffer = (PyBufferRaw)Marshal.PtrToStructure(_view, typeof(PyBufferRaw));
 
-            Shape = new int[_pyBuffer.Ndim];
+            Shape = new long[_pyBuffer.Ndim];
             Marshal.Copy(_pyBuffer.Shape, Shape, 0, Shape.Length);
+        }
+
+        int GetLocalIndex(int[] indices)
+        {
+#if DEBUG
+            if(indices.Length != Shape.Length) throw new Exception("指定された次元数が異なります");
+#endif
+            long result = 0;
+            long rankOffset = 1;
+
+            for (int i = indices.Length - 1; i >= 0; i--)
+            {
+                result += indices[i] * rankOffset;
+                rankOffset *= Shape[i];
+            }
+
+            return (int)result;
+        }
+
+        public Array GetArray()
+        {
+            int[] shape = new int[Shape.Length];
+            for (int i = 0; i < Shape.Length; i++)
+            {
+                shape[i] = (int)Shape[i];
+            }
+
+            Array result = Array.CreateInstance(typeof(T), shape);
+
+            GCHandle handle = GCHandle.Alloc(result, GCHandleType.Pinned);
+            Buffer.MemoryCopy((void*)_pyBuffer.BufPtr, (void*)handle.AddrOfPinnedObject(), _pyBuffer.Len, _pyBuffer.Len);
+            handle.Free();
+
+            return result;
         }
 
         public void Dispose()

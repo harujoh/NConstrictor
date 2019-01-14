@@ -31,15 +31,14 @@ namespace NConstrictor
             handle.Free();
         }
 
-        public T[] Get<T>(string name)
+        public Array Get<T>(string name)
         {
-            PyBuffer<T> pyBuffer = new PyBuffer<T>(name);
-            return pyBuffer.Data.ToArray();
+            return new PyBuffer<T>(name).GetArray();
         }
 
         public void WriteLine(string code)
         {
-            if(IsPrintLog)Console.WriteLine(">>> " + code);
+            if (IsPrintLog) Console.WriteLine(">>> " + code);
             PyRun.SimpleString(code);
         }
 
