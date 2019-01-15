@@ -18,6 +18,9 @@ namespace NConstrictor
         [DllImport(@"Python3.dll", EntryPoint = "PyObject_SetAttrString", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int SetAttrString(IntPtr o, string attrName, IntPtr v);
 
+        [DllImport(@"Python3.dll", EntryPoint = "PyObject_CallObject", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern IntPtr CallObject(IntPtr callableObject, IntPtr args);
+
 
         public static IntPtr GetAttr(string attr)
         {

@@ -31,7 +31,13 @@ namespace NConstrictor
             handle.Free();
         }
 
-        public Array Get<T>(string name)
+        public void SetVal(string name, IntPtr val)
+        {
+            PyObject.SetAttr(name, val);
+            Py.DecRef(val);
+        }
+
+        public Array GetArray<T>(string name)
         {
             return new PyBuffer<T>(name).GetArray();
         }

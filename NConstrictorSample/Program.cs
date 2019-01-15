@@ -35,11 +35,12 @@ namespace NConstrictorSample
             //加算したxを表示する
             py.WriteLine("print(x)");
 
-            //test.pyを読み込む
-            py.WriteLine("import pytest");
+            //pytest.pyを読み込む
+            PyModule pytest = new PyModule("pytest");
 
             //test内の関数calcを呼び出す
-            py.WriteLine("x = pytest.calc(x)");
+            IntPtr result = pytest["calc"].Call("x");
+            py.SetVal("x", result);
 
             //関数の結果を表示する
             py.WriteLine("print(x)");
@@ -54,10 +55,10 @@ namespace NConstrictorSample
             py.WriteLine("print(x)");
 
             //計算したxをC#で取得
-            TestType[,] destArrayX = (TestType[,])py.Get<TestType>("x");
+            TestType[,] destArrayX = (TestType[,])py.GetArray<TestType>("x");
 
             //Pythonで宣言したyをC#で取得
-            TestType[,] destArrayY = (TestType[,])py.Get<TestType>("y");
+            TestType[,] destArrayY = (TestType[,])py.GetArray<TestType>("y");
 
             //取得したXの中身を表示
             Console.WriteLine("\n> Console.WriteLine(x[i,j]) from C#");
