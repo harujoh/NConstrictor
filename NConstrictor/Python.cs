@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace NConstrictor
 {
-    public class Python
+    public class Python:IDisposable
     {
         public bool IsPrintLog;
 
@@ -62,5 +62,9 @@ namespace NConstrictor
             }
         }
 
+        public void Dispose()
+        {
+            Py.Finalize();
+        }
     }
 }
