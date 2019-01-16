@@ -24,7 +24,7 @@ namespace NConstrictorSample
             py["x"] = array;
 
             //pythonで受信したxを表示する
-            py.Run("print(x)");
+            py.Print("x");
 
             //xのすべての値に10を加算する
             py["x"] += 10;
@@ -33,7 +33,7 @@ namespace NConstrictorSample
             py["y"] = py["x"];
 
             //加算したxを表示する
-            py.Run("print(x)");
+            py.Print("x");
 
             //pytest.pyを読み込む
             PyObject pytest = PyImport.Import("pytest");
@@ -42,7 +42,7 @@ namespace NConstrictorSample
             py["x"] = pytest["calc"].Call(py["x"]);
 
             //関数の結果を表示する
-            py.Run("print(x)");
+            py.Print("x");
 
             Console.WriteLine("\n> pyBuffer[2, 1] += 10 From C#");
 
@@ -51,7 +51,7 @@ namespace NConstrictorSample
             pyBuffer[2, 1] += 10;
 
             //c#から変更した結果を表示する
-            py.Run("print(x)");
+            py.Print("x");
 
             //計算したxをC#で取得
             TestType[,] destArrayX = (TestType[,])py["x"].GetArray<TestType>();

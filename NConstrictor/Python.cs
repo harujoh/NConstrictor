@@ -33,7 +33,7 @@ namespace NConstrictor
 
         public void Print(string name)
         {
-            Console.WriteLine(">>> print(" + name + ")");
+            if (IsPrintLog) Console.WriteLine(">>> print(" + name + ")");
             PyRun.SimpleString("print(" + name + ")");
         }
 
