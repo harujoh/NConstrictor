@@ -101,7 +101,7 @@ namespace NConstrictor
             return result;
         }
 
-        public Array GetArray<T>()
+        public Array ToArray<T>()
         {
             return new PyBuffer<T>(this).GetArray();
         }

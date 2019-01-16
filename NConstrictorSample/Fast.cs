@@ -54,10 +54,10 @@ namespace NConstrictorSample
             py.Print("x");
 
             //計算したxをC#で取得
-            TestType[,] destArrayX = (TestType[,])py["x"].GetArray<TestType>();
+            TestType[,] destArrayX = (TestType[,])py["x"].ToArray<TestType>();
 
             //Pythonで宣言したyをC#で取得
-            TestType[,] destArrayY = (TestType[,])py["y"].GetArray<TestType>();
+            TestType[,] destArrayY = (TestType[,])py["y"].ToArray<TestType>();
 
             //取得したXの中身を表示
             Console.WriteLine("\n> Console.WriteLine(x[i,j]) from C#");
