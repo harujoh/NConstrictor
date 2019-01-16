@@ -5,22 +5,6 @@ namespace NConstrictor
 {
     public struct PyObject : IDisposable
     {
-        public bool Equals(PyObject other)
-        {
-            return _pyObject.Equals(other._pyObject);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is PyObject other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return _pyObject.GetHashCode();
-        }
-
         public static PyObject Zero = new PyObject(IntPtr.Zero);
 
         [DllImport(@"Python37.dll", EntryPoint = "PyObject_GetBuffer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -39,7 +23,15 @@ namespace NConstrictor
         [DllImport(@"Python3.dll", EntryPoint = "PyObject_CallObject", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern PyObject CallObject(PyObject callableObject, PyObject args);
 
+        [DllImport(@"Python3.dll", EntryPoint = "PyObject_RichCompareBool", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int RichCompareBool(PyObject o1, PyObject o2, int opid);
+
         private readonly IntPtr _pyObject;
+
+        public PyValue ToPyValue()
+        {
+            return new PyValue(this);
+        }
 
         public PyObject(IntPtr pyObject)
         {
@@ -76,14 +68,139 @@ namespace NConstrictor
             Py.DecRef(this);
         }
 
-        public static bool operator ==(PyObject x, IntPtr y)
+        public static implicit operator PyObject(string i)
         {
-            return x._pyObject == y;
+            return PyUnicode.DecodeFSDefault(i);
+        }
+
+        public static implicit operator PyObject(double i)
+        {
+            return PyFloat.FromDouble(i);
+        }
+
+        public static implicit operator PyObject(long i)
+        {
+            return PyLong.FromLong(i);
+        }
+
+        public static implicit operator PyObject(Array array)
+        {
+            long[] dims = new long[array.Rank];
+
+            for (int i = 0; i < dims.Length; i++)
+            {
+                dims[i] = array.GetLength(i);
+            }
+
+            GCHandle handle = GCHandle.Alloc(array, GCHandleType.Pinned);
+            Type t = array.GetType().GetElementType();
+            PyObject result = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype(t), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, PyObject.Zero);            
+
+            handle.Free();
+
+            return result;
+        }
+
+        public Array GetArray<T>()
+        {
+            return new PyBuffer<T>(this).GetArray();
+        }
+
+        static IntPtr GetDtype(Type t)
+        {
+            if (t == typeof(int))
+            {
+                return Dtype.Int32;
+            }
+            else if (t == typeof(float))
+            {
+                return Dtype.Float32;
+            }
+            else if (t == typeof(double))
+            {
+                return Dtype.Float64;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+
+        public static PyObject operator +(PyObject x, PyObject y)
+        {
+            return PyNumber.Add(x, y);
+        }
+
+        public static PyObject operator -(PyObject x, PyObject y)
+        {
+            return PyNumber.Subtract(x, y);
+        }
+
+        public static PyObject operator *(PyObject x, PyObject y)
+        {
+            return PyNumber.Multiply(x, y);
+        }
+
+        public static PyObject operator /(PyObject x, PyObject y)
+        {
+            return PyNumber.TrueDivide(x, y);
+        }
+
+        public static bool operator ==(PyObject a, IntPtr b)
+        {
+            return a._pyObject == b;
         }
 
         public static bool operator !=(PyObject a, IntPtr b)
         {
             return !(a == b);
+        }
+
+        public static bool operator ==(PyObject a, PyObject b)
+        {
+            return RichCompareBool(a, b, PyConsts.PY_EQ) == 1;
+        }
+
+        public static bool operator !=(PyObject a, PyObject b)
+        {
+            return RichCompareBool(a, b, PyConsts.PY_NE) == 1;
+        }
+
+        public static bool operator <(PyObject a, PyObject b)
+        {
+            return RichCompareBool(a, b, PyConsts.PY_LT) == 1;
+        }
+
+        public static bool operator <=(PyObject a, PyObject b)
+        {
+            return RichCompareBool(a, b, PyConsts.PY_LE) == 1;
+        }
+
+        public static bool operator >(PyObject a, PyObject b)
+        {
+            return RichCompareBool(a, b, PyConsts.PY_GT) == 1;
+        }
+
+        public static bool operator >=(PyObject a, PyObject b)
+        {
+            return RichCompareBool(a, b, PyConsts.PY_GE) == 1;
+        }
+
+        public bool Equals(PyObject other)
+        {
+            return _pyObject.Equals(other._pyObject);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is PyObject other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return _pyObject.GetHashCode();
         }
     }
 }

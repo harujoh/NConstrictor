@@ -61,11 +61,15 @@
     <Compile Include="PythonFunctions\PyCapsule.cs" />
     <Compile Include="PythonFunctions\PyConsts.cs" />
     <Compile Include="PythonFunctions\PyEval.cs" />
+    <Compile Include="PythonFunctions\PyFloat.cs" />
     <Compile Include="PythonFunctions\PyImport.cs" />
+    <Compile Include="PythonFunctions\PyLong.cs" />
+    <Compile Include="PythonFunctions\PyNumber.cs" />
     <Compile Include="PythonFunctions\PyObject.cs" />
     <Compile Include="PythonFunctions\PyRun.cs" />
     <Compile Include="PythonFunctions\PyTuple.cs" />
     <Compile Include="PythonFunctions\PyUnicode.cs" />
+    <Compile Include="PyValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

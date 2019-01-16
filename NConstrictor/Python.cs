@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 
 namespace NConstrictor
 {
@@ -32,27 +31,10 @@ namespace NConstrictor
             }
         }
 
-
-        public void Send<T>(string name, Array array)
+        public void Print(string name)
         {
-            long[] dims = new long[array.Rank];
-
-            for (int i = 0; i < dims.Length; i++)
-            {
-                dims[i] = array.GetLength(i);
-            }
-
-            GCHandle handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-
-            PyObject npArray = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype<T>(), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, PyObject.Zero);
-            Main[name] = npArray;
-
-            handle.Free();
-        }
-
-        public Array GetArray<T>(PyObject o)
-        {
-            return new PyBuffer<T>(o).GetArray();
+            Console.WriteLine(">>> print(" + name + ")");
+            PyRun.SimpleString("print(" + name + ")");
         }
 
         public void Run(string code)
@@ -61,24 +43,9 @@ namespace NConstrictor
             PyRun.SimpleString(code);
         }
 
-        IntPtr GetDtype<T>()
+        public PyValue GetPyValue()
         {
-            if (typeof(T) == typeof(int))
-            {
-                return Dtype.Int32;
-            }
-            else if (typeof(T) == typeof(float))
-            {
-                return Dtype.Float32;
-            }
-            else if (typeof(T) == typeof(double))
-            {
-                return Dtype.Float64;
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
+            return new PyValue(Main);
         }
 
         public void Dispose()

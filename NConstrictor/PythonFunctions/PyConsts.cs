@@ -2,6 +2,13 @@
 {
     public class PyConsts
     {
+        public const int PY_LT = 0;
+        public const int PY_LE = 1;
+        public const int PY_EQ = 2;
+        public const int PY_NE = 3;
+        public const int PY_GT = 4;
+        public const int PY_GE = 5;
+
         public const int FILE_INPUT = 257;
         public const int EVAL_INPUT = 258;
 
