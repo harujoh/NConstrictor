@@ -24,41 +24,40 @@ namespace NConstrictorSample
             py.Send<TestType>("x", array);
 
             //pythonで受信したxを表示する
-            py.WriteLine("print(x)");
+            py.Run("print(x)");
 
             //xのすべての値に10を加算する
-            py.WriteLine("x = x + 10");
+            py.Run("x = x + 10");
 
             //xをｙに転送
-            py.WriteLine("y = x");
+            py["y"] = py["x"];
 
             //加算したxを表示する
-            py.WriteLine("print(x)");
+            py.Run("print(x)");
 
             //pytest.pyを読み込む
-            PyModule pytest = new PyModule("pytest");
+            PyObject pytest = PyImport.Import("pytest");
 
             //test内の関数calcを呼び出す
-            IntPtr result = pytest["calc"].Call("x");
-            py.SetVal("x", result);
+            py["x"] = pytest["calc"].Call(py["x"]);
 
             //関数の結果を表示する
-            py.WriteLine("print(x)");
+            py.Run("print(x)");
 
             Console.WriteLine("\n> pyBuffer[2, 1] += 10 From C#");
 
             //Pythonの値をC#から変更するクラスを作成
-            PyBuffer<TestType> pyBuffer = new PyBuffer<TestType>("x");
+            PyBuffer<TestType> pyBuffer = new PyBuffer<TestType>(py["x"]);
             pyBuffer[2, 1] += 10;
 
             //c#から変更した結果を表示する
-            py.WriteLine("print(x)");
+            py.Run("print(x)");
 
             //計算したxをC#で取得
-            TestType[,] destArrayX = (TestType[,])py.GetArray<TestType>("x");
+            TestType[,] destArrayX = (TestType[,])py.GetArray<TestType>(py["x"]);
 
             //Pythonで宣言したyをC#で取得
-            TestType[,] destArrayY = (TestType[,])py.GetArray<TestType>("y");
+            TestType[,] destArrayY = (TestType[,])py.GetArray<TestType>(py["y"]);
 
             //取得したXの中身を表示
             Console.WriteLine("\n> Console.WriteLine(x[i,j]) from C#");

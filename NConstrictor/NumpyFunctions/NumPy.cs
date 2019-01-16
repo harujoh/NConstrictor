@@ -5,18 +5,18 @@ namespace NConstrictor
 {
     public class NumPy
     {
-        private static IntPtr _numpy;
-        private static IntPtr _cApi;
+        private static PyObject _numpy;
+        private static PyObject _cApi;
         private static IntPtr _pyArrayAPI;
         private static IntPtr[] _pyArrayAPIs = new IntPtr[303];//multiarray_funcs_api.Length
 
         public delegate IntPtr PyArrayDescrFromTypeDelegate(int typenum);
         public static PyArrayDescrFromTypeDelegate PyArrayDescrFromType;
 
-        public delegate IntPtr PyArrayFromBufferDelegate(IntPtr buf, IntPtr dtype, int count, int offset);
+        public delegate PyObject PyArrayFromBufferDelegate(PyObject buf, IntPtr dtype, int count, int offset);
         public static PyArrayFromBufferDelegate PyArrayFromBuffer;
 
-        public delegate IntPtr PyArrayNewFromDescrDelegate(IntPtr subtype, IntPtr descr, int nd, long[] dims, long[] strides, IntPtr data, int flags, IntPtr obj);
+        public delegate PyObject PyArrayNewFromDescrDelegate(IntPtr subtype, IntPtr descr, int nd, long[] dims, long[] strides, IntPtr data, int flags, PyObject obj);
         public static PyArrayNewFromDescrDelegate PyArrayNewFromDescr;
 
         public static IntPtr PyArrayType;
@@ -32,8 +32,7 @@ namespace NConstrictor
                 throw new Exception("numpy.core.multiarray failed to import");
             }
 
-            _cApi = PyObject.GetAttrString(_numpy, "_ARRAY_API");
-            Py.DecRef(_numpy);
+            _cApi = _numpy["_ARRAY_API"];
 
             if (_cApi == IntPtr.Zero)
             {
@@ -42,7 +41,6 @@ namespace NConstrictor
             }
 
             _pyArrayAPI = PyCapsule.GetPointer(_cApi, null);
-
             Py.DecRef(_cApi);
 
             if (_pyArrayAPI == IntPtr.Zero)

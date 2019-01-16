@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace NConstrictor
 {
@@ -12,9 +11,9 @@ namespace NConstrictor
         public static extern void Finalize();
 
         [DllImport(@"Python3.dll", EntryPoint = "Py_IncRef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void IncRef(IntPtr o);
+        public static extern void IncRef(PyObject o);
 
         [DllImport(@"Python3.dll", EntryPoint = "Py_DecRef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void DecRef(IntPtr o);
+        public static extern void DecRef(PyObject o);
     }
 }

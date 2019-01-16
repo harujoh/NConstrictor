@@ -18,15 +18,8 @@ namespace NConstrictor
 
         private readonly IntPtr _view;
 
-        public PyBuffer(string name)
+        public PyBuffer(PyObject targetObj)
         {
-            IntPtr targetObj = PyObject.GetAttr(name);
-
-            if (targetObj == IntPtr.Zero)
-            {
-                throw new Exception("対象の変数" + name + "が見つかりませんでした");
-            }
-
             _pyBuffer = new PyBufferRaw();
 
             _view = Marshal.AllocCoTaskMem(Marshal.SizeOf(typeof(PyBufferRaw)));

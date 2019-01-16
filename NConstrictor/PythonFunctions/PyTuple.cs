@@ -1,25 +1,24 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace NConstrictor
 {
     public class PyTuple
     {
         [DllImport(@"Python3.dll", EntryPoint = "PyTuple_New", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr New(long n);
+        public static extern PyObject New(long n);
 
         [DllImport(@"Python3.dll", EntryPoint = "PyTuple_SetItem", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr SetItem(IntPtr p, long pos, IntPtr o);
+        public static extern PyObject SetItem(PyObject p, long pos, PyObject o);
 
         [DllImport(@"Python3.dll", EntryPoint = "PyTuple_Size", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern long Size(IntPtr p);
+        public static extern long Size(PyObject p);
 
         [DllImport(@"Python3.dll", EntryPoint = "PyTuple_GetItem", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern IntPtr GetItem(IntPtr p, long pos);
+        public static extern PyObject GetItem(PyObject p, long pos);
 
-        public static IntPtr[] UnPack(IntPtr p)
+        public static PyObject[] UnPack(PyObject p)
         {
-            IntPtr[] result = new IntPtr[Size(p)];
+            PyObject[] result = new PyObject[Size(p)];
 
             for (int i = 0; i < result.Length; i++)
             {
@@ -29,9 +28,9 @@ namespace NConstrictor
             return result;
         }
 
-        public static IntPtr Pack(params IntPtr[] args)
+        public static PyObject Pack(params PyObject[] args)
         {
-            IntPtr result = New(args.Length);
+            PyObject result = New(args.Length);
 
             for (int i = 0; i < args.Length; i++)
             {

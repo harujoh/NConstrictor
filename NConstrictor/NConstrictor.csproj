@@ -61,9 +61,7 @@
     <Compile Include="PythonFunctions\PyCapsule.cs" />
     <Compile Include="PythonFunctions\PyConsts.cs" />
     <Compile Include="PythonFunctions\PyEval.cs" />
-    <Compile Include="PythonFunctions\PyFunc.cs" />
     <Compile Include="PythonFunctions\PyImport.cs" />
-    <Compile Include="PythonFunctions\PyModule.cs" />
     <Compile Include="PythonFunctions\PyObject.cs" />
     <Compile Include="PythonFunctions\PyRun.cs" />
     <Compile Include="PythonFunctions\PyTuple.cs" />

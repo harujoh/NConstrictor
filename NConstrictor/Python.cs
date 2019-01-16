@@ -3,16 +3,35 @@ using System.Runtime.InteropServices;
 
 namespace NConstrictor
 {
-    public class Python:IDisposable
+    public class Python : IDisposable
     {
         public bool IsPrintLog;
+        public PyObject Main;
 
         public Python(bool isPrintLog = false)
         {
             IsPrintLog = isPrintLog;
             Py.Initialize();
             NumPy.Initialize();
+
+            Main = PyImport.AddModule("__main__");
         }
+
+        public PyObject this[string name]
+        {
+            get
+            {
+                Py.IncRef(Main);
+                return Main[name];
+            }
+
+            set
+            {
+                Py.IncRef(Main);
+                Main[name] = value;
+            }
+        }
+
 
         public void Send<T>(string name, Array array)
         {
@@ -25,24 +44,18 @@ namespace NConstrictor
 
             GCHandle handle = GCHandle.Alloc(array, GCHandleType.Pinned);
 
-            IntPtr npArray = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype<T>(), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
-            PyObject.SetAttr(name, npArray);
+            PyObject npArray = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype<T>(), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, PyObject.Zero);
+            Main[name] = npArray;
 
             handle.Free();
         }
 
-        public void SetVal(string name, IntPtr val)
+        public Array GetArray<T>(PyObject o)
         {
-            PyObject.SetAttr(name, val);
-            Py.DecRef(val);
+            return new PyBuffer<T>(o).GetArray();
         }
 
-        public Array GetArray<T>(string name)
-        {
-            return new PyBuffer<T>(name).GetArray();
-        }
-
-        public void WriteLine(string code)
+        public void Run(string code)
         {
             if (IsPrintLog) Console.WriteLine(">>> " + code);
             PyRun.SimpleString(code);
