@@ -50,14 +50,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Python.cs" />
+    <Compile Include="PyDynamic.cs" />
+    <Compile Include="PythonFunctions\Python.cs" />
     <Compile Include="NumpyFunctions\Dtype.cs" />
     <Compile Include="NumpyFunctions\NpConsts.cs" />
     <Compile Include="NumpyFunctions\NumPy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PyBuffer.cs" />
+    <Compile Include="PythonFunctions\PyBuffer.cs" />
     <Compile Include="PythonFunctions\Py.cs" />
-    <Compile Include="PythonFunctions\PyBufferRaw.cs" />
+    <Compile Include="PythonFunctions\RawStructure\PyBufferRaw.cs" />
     <Compile Include="PythonFunctions\PyCapsule.cs" />
     <Compile Include="PythonFunctions\PyConsts.cs" />
     <Compile Include="PythonFunctions\PyEval.cs" />
@@ -69,7 +70,6 @@
     <Compile Include="PythonFunctions\PyRun.cs" />
     <Compile Include="PythonFunctions\PyTuple.cs" />
     <Compile Include="PythonFunctions\PyUnicode.cs" />
-    <Compile Include="PyValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -12,7 +12,7 @@ namespace NConstrictorSample
         public static void Run()
         {
             Python python = new Python(true);
-            dynamic py = python.GetPyValue();
+            dynamic py = new PyDynamic(python);
 
             TestType[,] array =
             {
@@ -37,7 +37,7 @@ namespace NConstrictorSample
             python.Print("x");
 
             //pytest.pyを読み込む
-            dynamic pyTest = PyImport.Import("pytest").ToPyValue();
+            dynamic pyTest = new PyDynamic(PyImport.Import("pytest"));
 
             //test内の関数calcを呼び出す
             py.x = pyTest.calc(py.x);

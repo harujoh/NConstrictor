@@ -5,7 +5,7 @@ namespace NConstrictor
     public class Python : IDisposable
     {
         public bool IsPrintLog;
-        public PyObject Main;
+        private PyObject _main;
 
         public Python(bool isPrintLog = false)
         {
@@ -13,21 +13,21 @@ namespace NConstrictor
             Py.Initialize();
             NumPy.Initialize();
 
-            Main = PyImport.AddModule("__main__");
+            _main = PyImport.AddModule("__main__");
         }
 
         public PyObject this[string name]
         {
             get
             {
-                Py.IncRef(Main);
-                return Main[name];
+                Py.IncRef(_main);
+                return _main[name];
             }
 
             set
             {
-                Py.IncRef(Main);
-                Main[name] = value;
+                Py.IncRef(_main);
+                _main[name] = value;
             }
         }
 
@@ -43,14 +43,14 @@ namespace NConstrictor
             PyRun.SimpleString(code);
         }
 
-        public PyValue GetPyValue()
-        {
-            return new PyValue(Main);
-        }
-
         public void Dispose()
         {
             Py.Finalize();
+        }
+
+        public static implicit operator PyObject(Python i)
+        {
+            return i._main;
         }
     }
 }

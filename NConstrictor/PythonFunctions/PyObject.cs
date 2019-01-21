@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace NConstrictor
 {
     public struct PyObject : IDisposable
     {
-        public static PyObject Zero = new PyObject(IntPtr.Zero);
-
         [DllImport(@"Python37.dll", EntryPoint = "PyObject_GetBuffer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int GetBuffer(PyObject exporter, IntPtr view, int flags);
 
@@ -27,16 +26,6 @@ namespace NConstrictor
         public static extern int RichCompareBool(PyObject o1, PyObject o2, int opid);
 
         private readonly IntPtr _pyObject;
-
-        public PyValue ToPyValue()
-        {
-            return new PyValue(this);
-        }
-
-        public PyObject(IntPtr pyObject)
-        {
-            _pyObject = pyObject;
-        }
 
         public PyObject this[string name]
         {
@@ -63,26 +52,6 @@ namespace NConstrictor
             return result;
         }
 
-        public void Dispose()
-        {
-            Py.DecRef(this);
-        }
-
-        public static implicit operator PyObject(string i)
-        {
-            return PyUnicode.DecodeFSDefault(i);
-        }
-
-        public static implicit operator PyObject(double i)
-        {
-            return PyFloat.FromDouble(i);
-        }
-
-        public static implicit operator PyObject(long i)
-        {
-            return PyLong.FromLong(i);
-        }
-
         public static implicit operator PyObject(Array array)
         {
             long[] dims = new long[array.Rank];
@@ -94,16 +63,11 @@ namespace NConstrictor
 
             GCHandle handle = GCHandle.Alloc(array, GCHandleType.Pinned);
             Type t = array.GetType().GetElementType();
-            PyObject result = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype(t), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, PyObject.Zero);            
+            PyObject result = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype(t), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
 
             handle.Free();
 
             return result;
-        }
-
-        public Array ToArray<T>()
-        {
-            return new PyBuffer<T>(this).GetArray();
         }
 
         static IntPtr GetDtype(Type t)
@@ -126,6 +90,30 @@ namespace NConstrictor
             }
         }
 
+        public Array ToArray<T>()
+        {
+            return new PyBuffer<T>(this).GetArray();
+        }
+
+        public static implicit operator PyObject(IntPtr i)
+        {
+            return Unsafe.As<IntPtr, PyObject>(ref i);
+        }
+
+        public static implicit operator PyObject(string i)
+        {
+            return PyUnicode.DecodeFSDefault(i);
+        }
+
+        public static implicit operator PyObject(double i)
+        {
+            return PyFloat.FromDouble(i);
+        }
+
+        public static implicit operator PyObject(long i)
+        {
+            return PyLong.FromLong(i);
+        }
 
         public static PyObject operator +(PyObject x, PyObject y)
         {
@@ -201,6 +189,11 @@ namespace NConstrictor
         public override int GetHashCode()
         {
             return _pyObject.GetHashCode();
+        }
+
+        public void Dispose()
+        {
+            Py.DecRef(this);
         }
     }
 }

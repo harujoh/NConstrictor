@@ -3,13 +3,13 @@ using System.Dynamic;
 
 namespace NConstrictor
 {
-    public class PyValue : DynamicObject
+    public class PyDynamic : DynamicObject
     {
-        private PyObject _pyObject;
+        private PyObject _main;
 
-        public PyValue(PyObject pyObject)
+        public PyDynamic(PyObject pyObject)
         {
-            _pyObject = pyObject;
+            _main = pyObject;
         }
 
         // メンバ呼び出し
@@ -22,21 +22,21 @@ namespace NConstrictor
                 PyTuple.SetItem(tuppleArgs, i, (PyObject)args[i]);
             }
 
-            result = PyObject.CallObject(_pyObject[binder.Name], tuppleArgs);
+            result = PyObject.CallObject(_main[binder.Name], tuppleArgs);
             return true;
         }
 
         // プロパティに値を設定しようとしたときに呼ばれる
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            Py.IncRef(_pyObject);
+            Py.IncRef(_main);
             if (value.GetType().IsArray)
             {
-                _pyObject[binder.Name] = (Array)value;
+                _main[binder.Name] = (Array)value;
             }
             else
             {
-                _pyObject[binder.Name] = (PyObject)value;
+                _main[binder.Name] = (PyObject)value;
             }
 
             return true;
@@ -45,8 +45,8 @@ namespace NConstrictor
         // プロパティから値を取得しようとしたときに呼ばれる
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            Py.IncRef(_pyObject);
-            result = _pyObject[binder.Name];
+            Py.IncRef(_main);
+            result = _main[binder.Name];
             return true;
         }
     }
