@@ -19,18 +19,8 @@ namespace NConstrictor
                 }
                 else
                 {
-                    T result = default;
-                    int size = Unsafe.SizeOf<T>();
-
                     IntPtr addr = NumPy.PyArrayGetPtr(this, indices);
-
-                    GCHandle handle = GCHandle.Alloc(result, GCHandleType.Pinned);
-
-                    Buffer.MemoryCopy((void*)addr, (void*)handle.AddrOfPinnedObject(), size, size);
-
-                    handle.Free();
-
-                    return result;
+                    return Unsafe.Read<T>((void*)addr);
                 }
             }
 

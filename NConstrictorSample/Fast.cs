@@ -26,14 +26,27 @@ namespace NConstrictorSample
             //pythonで受信したxを表示する
             py.Print("x");
 
-            //xのすべての値に10を加算する
-            py["x"] += 10;
+            Console.WriteLine("\n> pyBuffer[2, 1] += 100 From C#");
+
+            //Pythonの値をC#から変更するクラスを作成
+            PyArray<TestType> pyBuffer = py["x"];
+            pyBuffer[2, 1] += 100;
+
+            //c#から変更した結果を表示する
+            py.Print("x");
 
             //xをｙに転送
             py["y"] = py["x"];
 
+            Console.WriteLine("\n> pyBuffer += 1000 From C#");
+
+            //xのすべての値に1000を加算する
+            py["x"] += 1000;
+
             //加算したxを表示する
             py.Print("x");
+
+            Console.WriteLine("\n> pytest(x) in Python");
 
             //pytest.pyを読み込む
             PyObject pytest = PyImport.Import("pytest");
@@ -44,14 +57,7 @@ namespace NConstrictorSample
             //関数の結果を表示する
             py.Print("x");
 
-            Console.WriteLine("\n> pyBuffer[2, 1] += 1000 From C#");
-
-            //Pythonの値をC#から変更するクラスを作成
-            PyArray<TestType> pyBuffer = py["x"];
-            pyBuffer[2, 1] += 1000;
-
-            //c#から変更した結果を表示する
-            py.Print("x");
+            Console.WriteLine("\n> Add array From C#");
 
             //加算用の配列を作る
             TestType[] addArray = { 10000, 20000, 30000, 40000 };
@@ -61,6 +67,8 @@ namespace NConstrictorSample
 
             //加算したxを表示する
             py.Print("x");
+
+            Console.WriteLine("\n> Set array From C#");
 
             //セット用の配列を作る
             TestType[] setArray = { 1111, 2222, 3333, 4444 };
