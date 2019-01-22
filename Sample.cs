@@ -21,20 +21,20 @@ namespace NConstrictorSample
 
 
             PyArray<float> pyBuffer = py.x;
-            pyBuffer[2, 1] += 100.0f;
+            pyBuffer[2, 1] += 50.0f;
             python.Print("x");
 
 
-            py.x += 5000;
+            py.x += 50;
             python.Print("x");
 
 
-            py.x += new [] { 10000.0f, 20000.0f, 30000.0f, 40000.0f };
+            py.x += new[] { 100.0f, 200.0f, 300.0f, 400.0f };
             python.Print("x");
 
 
             PyArray<float[]> pyArrayBuffer = py.x;
-            pyArrayBuffer[1] = new []{ 1111.0f, 2222.0f, 3333.0f, 4444.0f };
+            pyArrayBuffer[1] = new[] { 10.0f, 20.0f, 30.0f, 40.0f };
             python.Print("x");
 
 
