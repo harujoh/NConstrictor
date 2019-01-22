@@ -19,6 +19,9 @@ namespace NConstrictor
         public delegate PyObject PyArrayNewFromDescrDelegate(IntPtr subtype, IntPtr descr, int nd, long[] dims, long[] strides, IntPtr data, int flags, PyObject obj);
         public static PyArrayNewFromDescrDelegate PyArrayNewFromDescr;
 
+        public delegate IntPtr PyArrayGetPtrDelegate(PyObject aobj, long[] ind);
+        public static PyArrayGetPtrDelegate PyArrayGetPtr;
+
         public static IntPtr PyArrayType;
 
         public static void Initialize()
@@ -54,6 +57,7 @@ namespace NConstrictor
             PyArrayDescrFromType = (PyArrayDescrFromTypeDelegate)Marshal.GetDelegateForFunctionPointer(_pyArrayAPIs[MultiarrayFuncsAPI.PyArray_DescrFromType], typeof(PyArrayDescrFromTypeDelegate));
             PyArrayFromBuffer = (PyArrayFromBufferDelegate)Marshal.GetDelegateForFunctionPointer(_pyArrayAPIs[MultiarrayFuncsAPI.PyArray_FromBuffer], typeof(PyArrayFromBufferDelegate));
             PyArrayNewFromDescr = (PyArrayNewFromDescrDelegate)Marshal.GetDelegateForFunctionPointer(_pyArrayAPIs[MultiarrayFuncsAPI.PyArray_NewFromDescr], typeof(PyArrayNewFromDescrDelegate));
+            PyArrayGetPtr = (PyArrayGetPtrDelegate)Marshal.GetDelegateForFunctionPointer(_pyArrayAPIs[MultiarrayFuncsAPI.PyArray_GetPtr], typeof(PyArrayGetPtrDelegate));
 
             PyArrayType = _pyArrayAPIs[MultiarrayTypesAPI.PyArray_Type];
         }

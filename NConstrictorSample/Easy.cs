@@ -45,13 +45,34 @@ namespace NConstrictorSample
             //関数の結果を表示する
             python.Print("x");
 
-            Console.WriteLine("\n> pyBuffer[2, 1] += 10 From C#");
+            Console.WriteLine("\n> pyBuffer[2, 1] += 1000 From C#");
 
             //Pythonの値をC#から変更するクラスを作成
-            PyBuffer<TestType> pyBuffer = new PyBuffer<TestType>(py.x);
-            pyBuffer[2, 1] += 10;
+            PyArray<TestType> pyBuffer = py.x;
+            pyBuffer[2, 1] += 1000;
 
             //c#から変更した結果を表示する
+            python.Print("x");
+
+            //加算用の配列を作る
+            TestType[] addArray = { 10000, 20000, 30000, 40000 };
+
+            //xのすべての値にaddArrayを加算する
+            py.x = py.x + addArray;
+
+            //加算したxを表示する
+            python.Print("x");
+
+            //セット用の配列を作る
+            TestType[] setArray = { 1111, 2222, 3333, 4444 };
+
+            //Pythonの値をC#から変更するクラスを作成
+            PyArray<TestType[]> pyArrayBuffer = py.x;
+
+            //x[1]にsetArrayを設定する
+            pyArrayBuffer[1] = setArray;
+
+            //加算したxを表示する
             python.Print("x");
 
             //計算したxをC#で取得
@@ -61,7 +82,7 @@ namespace NConstrictorSample
             TestType[,] destArrayY = (TestType[,])py.y.ToArray<TestType>();
 
             //取得したXの中身を表示
-            Console.WriteLine("\n> Console.WriteLine(x[i,j]) from C#");
+            Console.WriteLine("\n> Console.WriteLine(x[i, j]) from C#");
             for (int i = 0; i < destArrayX.GetLength(0); i++)
             {
                 for (int j = 0; j < destArrayX.GetLength(1); j++)
@@ -71,7 +92,7 @@ namespace NConstrictorSample
             }
 
             //取得したYの中身を表示
-            Console.WriteLine("\n> Console.WriteLine(y[i,j]) from C#");
+            Console.WriteLine("\n> Console.WriteLine(y[i, j]) from C#");
             for (int i = 0; i < destArrayY.GetLength(0); i++)
             {
                 for (int j = 0; j < destArrayY.GetLength(1); j++)
