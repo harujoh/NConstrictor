@@ -59,6 +59,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PythonFunctions\PyBuffer.cs" />
     <Compile Include="PythonFunctions\Py.cs" />
+    <Compile Include="PythonFunctions\PyBool.cs" />
     <Compile Include="PythonFunctions\RawStructure\PyBufferRaw.cs" />
     <Compile Include="PythonFunctions\PyCapsule.cs" />
     <Compile Include="PythonFunctions\PyConsts.cs" />

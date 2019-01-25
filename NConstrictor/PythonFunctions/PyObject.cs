@@ -105,6 +105,11 @@ namespace NConstrictor
             return PyUnicode.DecodeFSDefault(i);
         }
 
+        public static implicit operator PyObject(bool i)
+        {
+            return PyBool.FromLong(i ? 1 : 0);
+        }
+
         public static implicit operator PyObject(double i)
         {
             return PyFloat.FromDouble(i);
