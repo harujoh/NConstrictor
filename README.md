@@ -1,5 +1,5 @@
 # NConstrictor [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-C#からPythonの操作を高速に行うライブラリです
+C#からPythonのC-APIを使い、メモリ操作、モジュールの関数呼び出しを行うライブラリです
 
 ![Sample](https://github.com/harujoh/NConstrictor/blob/Images/top.png)
 
