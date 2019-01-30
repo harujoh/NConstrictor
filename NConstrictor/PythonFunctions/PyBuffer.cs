@@ -20,8 +20,6 @@ namespace NConstrictor
 
         public PyBuffer(PyObject targetObj)
         {
-            _pyBuffer = new PyBufferRaw();
-
             _view = Marshal.AllocCoTaskMem(Marshal.SizeOf(typeof(PyBufferRaw)));
 
             if (PyObject.GetBuffer(targetObj, _view, PyConsts.BUF_C_CONTIGUOUS | PyConsts.BUF_FORMAT) != 0)
