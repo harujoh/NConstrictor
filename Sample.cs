@@ -24,7 +24,7 @@ namespace NConstrictorSample
             Python.Print("x");
 
 
-            py.x += 50;
+            py.x += 50.0f;
             Python.Print("x");
 
 
