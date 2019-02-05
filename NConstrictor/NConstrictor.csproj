@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PyDynamic.cs" />
+    <Compile Include="PyMain.cs" />
     <Compile Include="PythonFunctions\PyArray.cs" />
     <Compile Include="PythonFunctions\Python.cs" />
     <Compile Include="NumpyFunctions\Dtype.cs" />

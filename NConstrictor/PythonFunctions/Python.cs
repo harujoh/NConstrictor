@@ -2,55 +2,43 @@
 
 namespace NConstrictor
 {
-    public class Python : IDisposable
+    public struct Python : IDisposable
     {
-        public bool IsPrintLog;
-        private PyObject _main;
+        public static PyObject Main;
 
-        public Python(bool isPrintLog = false)
+        static Python()
         {
-            IsPrintLog = isPrintLog;
             Py.Initialize();
             NumPy.Initialize();
 
-            _main = PyImport.AddModule("__main__");
+            Main = PyImport.AddModule("__main__");
         }
 
-        public PyObject this[string name]
+        public static void Print(string name, bool isPrintLog = true)
         {
-            get
-            {
-                Py.IncRef(_main);
-                return _main[name];
-            }
-
-            set
-            {
-                Py.IncRef(_main);
-                _main[name] = value;
-            }
-        }
-
-        public void Print(string name)
-        {
-            if (IsPrintLog) Console.WriteLine(">>> print(" + name + ")");
+            if (isPrintLog) Console.WriteLine(">>> print(" + name + ")");
             PyRun.SimpleString("print(" + name + ")");
         }
 
-        public void Run(string code)
+        public static void PrintOnly(string name)
         {
-            if (IsPrintLog) Console.WriteLine(">>> " + code);
+            PyRun.SimpleString("print(" + name + ")");
+        }
+
+        public static void Run(string code, bool isPrintLog = true)
+        {
+            if (isPrintLog) Console.WriteLine(">>> " + code);
+            PyRun.SimpleString(code);
+        }
+
+        public static void RunOnly(string code)
+        {
             PyRun.SimpleString(code);
         }
 
         public void Dispose()
         {
             Py.Finalize();
-        }
-
-        public static implicit operator PyObject(Python i)
-        {
-            return i._main;
         }
     }
 }

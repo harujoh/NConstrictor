@@ -31,15 +31,15 @@ namespace NConstrictor
         {
             get
             {
-                PyObject result = PyObject.GetAttrString(this, name);
-                Py.DecRef(this);
+                PyObject result = PyObject.GetAttrString(_pyObject, name);
+                Py.DecRef(_pyObject);
 
                 return result;
             }
 
             set
             {
-                PyObject.SetAttrString(this, name, value);
+                PyObject.SetAttrString(_pyObject, name, value);
                 Py.DecRef(value);
             }
         }
@@ -47,7 +47,7 @@ namespace NConstrictor
         public PyObject Call(params PyObject[] argNames)
         {
             PyObject args = PyTuple.Pack(argNames);
-            PyObject result = PyObject.CallObject(this, args);
+            PyObject result = PyObject.CallObject(_pyObject, args);
 
             return result;
         }
@@ -70,7 +70,7 @@ namespace NConstrictor
             return result;
         }
 
-        static IntPtr GetDtype(Type t)
+        public static IntPtr GetDtype(Type t)
         {
             if (t == typeof(int))
             {
@@ -92,7 +92,7 @@ namespace NConstrictor
 
         public Array ToArray<T>()
         {
-            return new PyBuffer<T>(this).GetArray();
+            return new PyBuffer<T>(_pyObject).GetArray();
         }
 
         public static implicit operator PyObject(IntPtr i)
@@ -100,24 +100,24 @@ namespace NConstrictor
             return Unsafe.As<IntPtr, PyObject>(ref i);
         }
 
-        public static implicit operator PyObject(string i)
+        public static implicit operator PyObject(string str)
         {
-            return PyUnicode.DecodeFSDefault(i);
+            return PyUnicode.DecodeFSDefault(str);
         }
 
-        public static implicit operator PyObject(bool i)
+        public static implicit operator PyObject(bool flg)
         {
-            return PyBool.FromLong(i ? 1 : 0);
+            return PyBool.FromLong(flg ? 1 : 0);
         }
 
-        public static implicit operator PyObject(double i)
+        public static implicit operator PyObject(double d)
         {
-            return PyFloat.FromDouble(i);
+            return PyFloat.FromDouble(d);
         }
 
-        public static implicit operator PyObject(long i)
+        public static implicit operator PyObject(long l)
         {
-            return PyLong.FromLong(i);
+            return PyLong.FromLong(l);
         }
 
         public static PyObject operator +(PyObject x, PyObject y)
@@ -198,7 +198,7 @@ namespace NConstrictor
 
         public void Dispose()
         {
-            Py.DecRef(this);
+            Py.DecRef(_pyObject);
         }
     }
 }

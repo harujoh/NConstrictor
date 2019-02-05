@@ -5,11 +5,11 @@ namespace NConstrictor
 {
     public class PyDynamic : DynamicObject
     {
-        private PyObject _main;
+        private PyObject _pyObject;
 
         public PyDynamic(PyObject pyObject)
         {
-            _main = pyObject;
+            _pyObject = pyObject;
         }
 
         // メンバ呼び出し
@@ -22,21 +22,35 @@ namespace NConstrictor
                 PyTuple.SetItem(tuppleArgs, i, (PyObject)args[i]);
             }
 
-            result = PyObject.CallObject(_main[binder.Name], tuppleArgs);
+            result = PyObject.CallObject(_pyObject[binder.Name], tuppleArgs);
+
             return true;
         }
 
         // プロパティに値を設定しようとしたときに呼ばれる
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            Py.IncRef(_main);
+            Py.IncRef(_pyObject);
+
             if (value.GetType().IsArray)
             {
-                _main[binder.Name] = (Array)value;
+                _pyObject[binder.Name] = (Array)value;
+            }
+            else if (value is PyArray<float> floatPyArray)
+            {
+                _pyObject[binder.Name] = floatPyArray;
+            }
+            else if (value is PyArray<double> doublePyArray)
+            {
+                _pyObject[binder.Name] = doublePyArray;
+            }
+            else if (value is PyArray<int> intPyArray)
+            {
+                _pyObject[binder.Name] = intPyArray;
             }
             else
             {
-                _main[binder.Name] = (PyObject)value;
+                _pyObject[binder.Name] = (PyObject)value;
             }
 
             return true;
@@ -45,9 +59,15 @@ namespace NConstrictor
         // プロパティから値を取得しようとしたときに呼ばれる
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            Py.IncRef(_main);
-            result = _main[binder.Name];
+            Py.IncRef(_pyObject);
+            result = _pyObject[binder.Name];
+
             return true;
+        }
+
+        public static implicit operator PyObject(PyDynamic main)
+        {
+            return main._pyObject;
         }
     }
 }

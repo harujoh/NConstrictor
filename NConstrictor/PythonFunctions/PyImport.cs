@@ -15,10 +15,7 @@ namespace NConstrictor
 
         public static PyObject Import(string name)
         {
-            PyObject arg = PyUnicode.DecodeFSDefault(name);
-            PyObject result = Import(arg);
-
-            return result;
+            return Import(PyUnicode.DecodeFSDefault(name));
         }
     }
 }
