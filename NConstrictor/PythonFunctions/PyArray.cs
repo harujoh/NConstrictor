@@ -62,7 +62,7 @@ namespace NConstrictor
                 else
                 {
                     IntPtr addr = NumPy.PyArrayGetPtr(this, indices);
-                    Unsafe.Write((void*)(addr), value);
+                    Unsafe.Write((void*)addr, value);
                 }
             }
         }
