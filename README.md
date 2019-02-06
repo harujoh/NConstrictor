@@ -1,4 +1,4 @@
-# NConstrictor [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+# NConstrictor [![NuGet version](https://badge.fury.io/nu/NConstrictor.svg)](https://badge.fury.io/nu/NConstrictor)[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 C#からPythonのC-APIを使い、メモリ操作、モジュールの関数呼び出しを行うライブラリです
 
 ![Sample](https://github.com/harujoh/NConstrictor/blob/Images/top.png)
