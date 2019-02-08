@@ -38,8 +38,9 @@ namespace NConstrictor
             PyRun.SimpleString("print(" + name + ")");
         }
 
-        public static void Print(PyObject pyObject)
+        public static void Print(PyObject pyObject, bool isPrintLog = true)
         {
+            if (isPrintLog) Console.WriteLine(">>> print()");
             PyRun.SimpleString("print(" + _names[pyObject] + ")");
         }
 
