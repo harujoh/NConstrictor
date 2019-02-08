@@ -3,7 +3,7 @@ using System.Security;
 
 namespace NConstrictor
 {
-    class PyFloat
+    public class PyFloat
     {
         [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyFloat_FromDouble", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
