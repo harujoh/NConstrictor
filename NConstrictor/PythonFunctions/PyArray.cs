@@ -8,6 +8,11 @@ namespace NConstrictor
     {
         private readonly PyObject _pyObject;
 
+        public PyArray(PyObject pyObject)
+        {
+            _pyObject = pyObject;
+        }
+
         public unsafe T this[params long[] indices]
         {
             get
@@ -88,11 +93,98 @@ namespace NConstrictor
                 handle = GCHandle.Alloc(tmp, GCHandleType.Pinned);
             }
 
-            PyObject result = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, PyObject.GetDtype(typeof(T)), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
+            PyObject result = Python.GetNamelessObject(NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype(typeof(T)), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero));
 
             handle.Free();
 
             return Unsafe.As<PyObject, PyArray<T>>(ref result);
+        }
+
+        static IntPtr GetDtype(Type t)
+        {
+            if (t == typeof(int))
+            {
+                return Dtype.Int32;
+            }
+            else if (t == typeof(float))
+            {
+                return Dtype.Float32;
+            }
+            else if (t == typeof(double))
+            {
+                return Dtype.Float64;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public Array ToArray()
+        {
+            return new PyBuffer<T>(_pyObject).GetArray();
+        }
+
+        public static PyArray<T> operator +(PyArray<T> x, PyArray<T> y)
+        {
+            return PyNumber.Add(x, y);
+        }
+
+        public static PyArray<T> operator -(PyArray<T> x, PyArray<T> y)
+        {
+            return PyNumber.Subtract(x, y);
+        }
+
+        public static PyArray<T> operator *(PyArray<T> x, PyArray<T> y)
+        {
+            return PyNumber.Multiply(x, y);
+        }
+
+        public static PyArray<T> operator /(PyArray<T> x, PyArray<T> y)
+        {
+            return PyNumber.TrueDivide(x, y);
+        }
+
+        // PyObject : PyArray
+        public static PyArray<T> operator +(PyObject x, PyArray<T> y)
+        {
+            return PyNumber.Add(x, y);
+        }
+
+        public static PyArray<T> operator -(PyObject x, PyArray<T> y)
+        {
+            return PyNumber.Subtract(x, y);
+        }
+
+        public static PyArray<T> operator *(PyObject x, PyArray<T> y)
+        {
+            return PyNumber.Multiply(x, y);
+        }
+
+        public static PyArray<T> operator /(PyObject x, PyArray<T> y)
+        {
+            return PyNumber.TrueDivide(x, y);
+        }
+
+        // PyArray : PyObject
+        public static PyArray<T> operator +(PyArray<T> x, PyObject y)
+        {
+            return PyNumber.Add(x, y);
+        }
+
+        public static PyArray<T> operator -(PyArray<T> x, PyObject y)
+        {
+            return PyNumber.Subtract(x, y);
+        }
+
+        public static PyArray<T> operator *(PyArray<T> x, PyObject y)
+        {
+            return PyNumber.Multiply(x, y);
+        }
+
+        public static PyArray<T> operator /(PyArray<T> x, PyObject y)
+        {
+            return PyNumber.TrueDivide(x, y);
         }
 
         public static implicit operator PyObject(PyArray<T> pyArray)
@@ -102,7 +194,8 @@ namespace NConstrictor
 
         public static implicit operator PyArray<T>(PyObject pyObject)
         {
-            return Unsafe.As<PyObject, PyArray<T>>(ref pyObject);
+            PyObject result = Python.GetNamelessObject(pyObject);
+            return Unsafe.As<PyObject, PyArray<T>>(ref result);
         }
 
         public void Dispose()

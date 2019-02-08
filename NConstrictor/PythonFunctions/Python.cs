@@ -1,17 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NConstrictor
 {
     public struct Python : IDisposable
     {
         public static PyObject Main;
+        private static Dictionary<PyObject, string> _names = new Dictionary<PyObject, string>();
+        private static ulong _nameCounter = 0;
 
-        static Python()
+        public static void Initialize()
         {
             Py.Initialize();
             NumPy.Initialize();
 
             Main = PyImport.AddModule("__main__");
+        }
+
+        public PyObject this[string name]
+        {
+            get
+            {
+                Py.IncRef(Main);
+                return Main[name];
+            }
+
+            set
+            {
+                Py.IncRef(Main);
+                Main[name] = value;
+            }
         }
 
         public static void Print(string name, bool isPrintLog = true)
@@ -20,9 +38,9 @@ namespace NConstrictor
             PyRun.SimpleString("print(" + name + ")");
         }
 
-        public static void PrintOnly(string name)
+        public static void Print(PyObject pyObject)
         {
-            PyRun.SimpleString("print(" + name + ")");
+            PyRun.SimpleString("print(" + _names[pyObject] + ")");
         }
 
         public static void Run(string code, bool isPrintLog = true)
@@ -34,6 +52,32 @@ namespace NConstrictor
         public static void RunOnly(string code)
         {
             PyRun.SimpleString(code);
+        }
+
+        public static PyObject GetNamelessObject(PyObject value)
+        {
+            if (!_names.ContainsKey(value))
+            {
+                string name = "Py" + _nameCounter;
+
+                _names.Add(value, name);
+                _nameCounter++;
+
+                Py.IncRef(Main);
+                Main[name] = value;
+
+                Py.IncRef(Main);
+                return Main[name];
+            }
+            else
+            {
+                return value;
+            }
+        }
+
+        public static string GetName(PyObject value)
+        {
+            return _names[value];
         }
 
         public void Dispose()

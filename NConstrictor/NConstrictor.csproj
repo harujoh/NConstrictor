@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PyDynamic.cs" />
-    <Compile Include="PyMain.cs" />
+    <Compile Include="PyDynamicModule.cs" />
     <Compile Include="PythonFunctions\MultiThread\PyGILState.cs" />
     <Compile Include="PythonFunctions\PyArray.cs" />
     <Compile Include="PythonFunctions\Python.cs" />

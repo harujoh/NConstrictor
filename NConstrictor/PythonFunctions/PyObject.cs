@@ -55,49 +55,6 @@ namespace NConstrictor
             return CallObject(_pyObject, PyTuple.Pack(argNames));
         }
 
-        public static implicit operator PyObject(Array array)
-        {
-            long[] dims = new long[array.Rank];
-
-            for (int i = 0; i < dims.Length; i++)
-            {
-                dims[i] = array.GetLength(i);
-            }
-
-            GCHandle handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            Type t = array.GetType().GetElementType();
-            PyObject result = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype(t), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
-
-            handle.Free();
-
-            return result;
-        }
-
-        public static IntPtr GetDtype(Type t)
-        {
-            if (t == typeof(int))
-            {
-                return Dtype.Int32;
-            }
-            else if (t == typeof(float))
-            {
-                return Dtype.Float32;
-            }
-            else if (t == typeof(double))
-            {
-                return Dtype.Float64;
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public Array ToArray<T>()
-        {
-            return new PyBuffer<T>(_pyObject).GetArray();
-        }
-
         public static implicit operator PyObject(IntPtr i)
         {
             return Unsafe.As<IntPtr, PyObject>(ref i);
