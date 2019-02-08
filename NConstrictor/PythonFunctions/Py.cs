@@ -1,18 +1,23 @@
 ﻿using System.Runtime.InteropServices;
+using System.Security;
 
 namespace NConstrictor
 {
     public class Py
     {
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "Py_Initialize", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void Initialize();
 
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "Py_Finalize", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void Finalize();
 
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "Py_IncRef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void IncRef(PyObject o);
 
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "Py_DecRef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void DecRef(PyObject o);
     }

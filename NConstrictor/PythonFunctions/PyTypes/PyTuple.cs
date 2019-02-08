@@ -1,18 +1,23 @@
 ﻿using System.Runtime.InteropServices;
+using System.Security;
 
 namespace NConstrictor
 {
     public class PyTuple
     {
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyTuple_New", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern PyObject New(long n);
 
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyTuple_SetItem", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern PyObject SetItem(PyObject p, long pos, PyObject o);
 
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyTuple_Size", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern long Size(PyObject p);
 
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyTuple_GetItem", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern PyObject GetItem(PyObject p, long pos);
 

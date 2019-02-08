@@ -1,27 +1,33 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace NConstrictor
 {
     public struct PyObject : IDisposable
     {
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python37.dll", EntryPoint = "PyObject_GetBuffer", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int GetBuffer(PyObject exporter, IntPtr view, int flags);
-
-        //命名ルールで言えばPyBuffer内に記述すべきだがPyObject_GetBufferの対である為こちらに記述
+        
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python37.dll", EntryPoint = "PyBuffer_Release", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern void ReleaseBuffer(IntPtr view);
+        public static extern void ReleaseBuffer(IntPtr view);  //命名ルールで言えばPyBuffer内に記述すべきだがPyObject_GetBufferの対である為こちらに記述
 
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyObject_GetAttrString", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern PyObject GetAttrString(PyObject o, string attrName);
 
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyObject_SetAttrString", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int SetAttrString(PyObject o, string attrName, PyObject v);
 
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyObject_CallObject", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern PyObject CallObject(PyObject callableObject, PyObject args);
 
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyObject_RichCompareBool", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int RichCompareBool(PyObject o1, PyObject o2, int opid);
 
@@ -46,10 +52,7 @@ namespace NConstrictor
 
         public PyObject Call(params PyObject[] argNames)
         {
-            PyObject args = PyTuple.Pack(argNames);
-            PyObject result = PyObject.CallObject(_pyObject, args);
-
-            return result;
+            return CallObject(_pyObject, PyTuple.Pack(argNames));
         }
 
         public static implicit operator PyObject(Array array)

@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="PyDynamic.cs" />
     <Compile Include="PyMain.cs" />
+    <Compile Include="PythonFunctions\MultiThread\PyGILState.cs" />
     <Compile Include="PythonFunctions\PyArray.cs" />
     <Compile Include="PythonFunctions\Python.cs" />
     <Compile Include="NumpyFunctions\Dtype.cs" />
@@ -60,19 +61,19 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PythonFunctions\PyBuffer.cs" />
     <Compile Include="PythonFunctions\Py.cs" />
-    <Compile Include="PythonFunctions\PyBool.cs" />
+    <Compile Include="PythonFunctions\PyTypes\PyBool.cs" />
     <Compile Include="PythonFunctions\RawStructure\PyBufferRaw.cs" />
     <Compile Include="PythonFunctions\PyCapsule.cs" />
     <Compile Include="PythonFunctions\PyConsts.cs" />
-    <Compile Include="PythonFunctions\PyEval.cs" />
-    <Compile Include="PythonFunctions\PyFloat.cs" />
+    <Compile Include="PythonFunctions\MultiThread\PyEval.cs" />
+    <Compile Include="PythonFunctions\PyTypes\PyFloat.cs" />
     <Compile Include="PythonFunctions\PyImport.cs" />
-    <Compile Include="PythonFunctions\PyLong.cs" />
+    <Compile Include="PythonFunctions\PyTypes\PyLong.cs" />
     <Compile Include="PythonFunctions\PyNumber.cs" />
     <Compile Include="PythonFunctions\PyObject.cs" />
     <Compile Include="PythonFunctions\PyRun.cs" />
-    <Compile Include="PythonFunctions\PyTuple.cs" />
-    <Compile Include="PythonFunctions\PyUnicode.cs" />
+    <Compile Include="PythonFunctions\PyTypes\PyTuple.cs" />
+    <Compile Include="PythonFunctions\PyTypes\PyUnicode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

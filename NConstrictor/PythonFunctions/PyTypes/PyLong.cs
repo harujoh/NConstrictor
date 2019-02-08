@@ -1,9 +1,11 @@
 ﻿using System.Runtime.InteropServices;
+using System.Security;
 
 namespace NConstrictor
 {
-    class PyLong
+    public class PyLong
     {
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyLong_FromLong", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern PyObject FromLong(long v);
     }
