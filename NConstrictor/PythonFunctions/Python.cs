@@ -3,11 +3,16 @@ using System.Collections.Generic;
 
 namespace NConstrictor
 {
-    public struct Python : IDisposable
+    public class Python : IDisposable
     {
         public static PyObject Main;
         private static Dictionary<PyObject, string> _names = new Dictionary<PyObject, string>();
         private static ulong _nameCounter = 0;
+
+        public Python()
+        {
+            Initialize();
+        }
 
         public static void Initialize()
         {
