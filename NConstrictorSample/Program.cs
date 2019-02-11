@@ -11,7 +11,7 @@ namespace NConstrictorSample
     {
         static void Main(string[] args)
         {
-            Python.Initialize();
+            Python py = new Python();
 
             TestType[,] array =
             {
@@ -34,8 +34,8 @@ namespace NConstrictorSample
             //c#から変更した結果を表示する
             Python.Print(x);
 
-            //xをｙに転送
-            PyArray<TestType> y = x;
+            //xをPythonのｙに転送
+            py["y"] = x;
 
             Console.WriteLine("\n> pyBuffer += 1000 From C#");
 
@@ -85,7 +85,7 @@ namespace NConstrictorSample
             TestType[,] destArrayX = (TestType[,])x.ToArray();
 
             //Pythonで宣言したyをC#で取得
-            TestType[,] destArrayY = (TestType[,])y.ToArray();
+            TestType[,] destArrayY = (TestType[,])((PyArray<TestType>)py["y"]).ToArray();
 
             //取得したXの中身を表示
             Console.WriteLine("\n> Console.WriteLine(x[i, j]) from C#");
