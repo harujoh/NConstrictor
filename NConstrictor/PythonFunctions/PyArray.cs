@@ -149,7 +149,7 @@ namespace NConstrictor
             }
 
             GCHandle handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            PyObject result = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype(array), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
+            PyObject result = Python.GetNamelessObject(NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype(array), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero));
             handle.Free();
 
             return Unsafe.As<PyObject, PyArray<T>>(ref result);
