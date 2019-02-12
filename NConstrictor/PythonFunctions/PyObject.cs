@@ -80,44 +80,6 @@ namespace NConstrictor
             return PyLong.FromLong(l);
         }
 
-        public static implicit operator PyObject(Array array)
-        {
-            long[] dims = new long[array.Rank];
-
-            for (int i = 0; i < dims.Length; i++)
-            {
-                dims[i] = array.GetLength(i);
-            }
-
-            GCHandle handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            PyObject result = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype(array), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
-            handle.Free();
-
-            return result;
-        }
-
-        static IntPtr GetDtype(Array array)
-        {
-            Type t = array.GetType().GetElementType();
-
-            if (t == typeof(int))
-            {
-                return Dtype.Int32;
-            }
-            else if (t == typeof(float))
-            {
-                return Dtype.Float32;
-            }
-            else if (t == typeof(double))
-            {
-                return Dtype.Float64;
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         public static PyObject operator +(PyObject x, PyObject y)
         {
             return PyNumber.Add(x, y);

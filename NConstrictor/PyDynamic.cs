@@ -19,9 +19,17 @@ namespace NConstrictor
 
             for (int i = 0; i < args.Length; i++)
             {
-                if (args[i].GetType().IsArray)
+                if (args[i] is int[] intArray)
                 {
-                    PyTuple.SetItem(tuppleArgs, i, (Array)args[i]);
+                    PyTuple.SetItem(tuppleArgs, i, (PyArray<int>)intArray);
+                }
+                else if (args[i] is float[] floatArray)
+                {
+                    PyTuple.SetItem(tuppleArgs, i, (PyArray<float>)floatArray);
+                }
+                else if (args[i] is double[] doubleArray)
+                {
+                    PyTuple.SetItem(tuppleArgs, i, (PyArray<double>)doubleArray);
                 }
                 else if (args[i] is PyArray<float> floatPyArray)
                 {
@@ -51,9 +59,17 @@ namespace NConstrictor
         {
             Py.IncRef(_pyObject);
 
-            if (value.GetType().IsArray)
+            if (value is int[] intArray)
             {
-                _pyObject[binder.Name] = (Array)value;
+                _pyObject[binder.Name] = (PyArray<int>)intArray;
+            }
+            else if (value is float[] floatArray)
+            {
+                _pyObject[binder.Name] = (PyArray<float>)floatArray;
+            }
+            else if (value is double[] doubleArray)
+            {
+                _pyObject[binder.Name] = (PyArray<double>)doubleArray;
             }
             else if (value is PyArray<float> floatPyArray)
             {
