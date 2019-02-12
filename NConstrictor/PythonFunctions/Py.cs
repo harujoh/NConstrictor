@@ -20,5 +20,13 @@ namespace NConstrictor
         [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "Py_DecRef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern void DecRef(PyObject o);
+
+        public static void Clear(PyObject o)
+        {
+            while (PyObject.Size(o) != -1)
+            {
+                Py.DecRef(o);
+            }
+        }
     }
 }

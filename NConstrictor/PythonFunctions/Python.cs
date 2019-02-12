@@ -26,13 +26,11 @@ namespace NConstrictor
         {
             get
             {
-                Py.IncRef(Main);
                 return Main[name];
             }
 
             set
             {
-                Py.IncRef(Main);
                 Main[name] = value;
             }
         }
@@ -69,10 +67,8 @@ namespace NConstrictor
                 _names.Add(value, name);
                 _nameCounter++;
 
-                Py.IncRef(Main);
                 Main[name] = value;
 
-                Py.IncRef(Main);
                 return Main[name];
             }
             else

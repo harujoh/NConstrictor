@@ -50,7 +50,7 @@ namespace NConstrictor
             return (int)result;
         }
 
-        public Array GetArray()
+        public TArray GetNdArray<TArray>()
         {
             int[] shape = new int[Shape.Length];
             for (int i = 0; i < Shape.Length; i++)
@@ -58,11 +58,24 @@ namespace NConstrictor
                 shape[i] = (int)Shape[i];
             }
 
+#if DEBUG
+            if(typeof(TArray).GetElementType() != typeof(T)) throw new Exception();
+#endif
             Array result = Array.CreateInstance(typeof(T), shape);
 
             GCHandle handle = GCHandle.Alloc(result, GCHandleType.Pinned);
             Buffer.MemoryCopy((void*)_pyBuffer.BufPtr, (void*)handle.AddrOfPinnedObject(), _pyBuffer.Len, _pyBuffer.Len);
             handle.Free();
+
+            return Unsafe.As<Array, TArray>(ref result);
+        }
+
+        public T[] GetArray()
+        {
+            T[] result = new T[_pyBuffer.Len / _pyBuffer.ItemSize];
+
+            void* p = Unsafe.AsPointer(ref result[0]);
+            Buffer.MemoryCopy((void*)_pyBuffer.BufPtr, p, _pyBuffer.Len, _pyBuffer.Len);
 
             return result;
         }

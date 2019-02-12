@@ -10,7 +10,7 @@ namespace NConstrictor
 
         public PyArray(PyObject pyObject)
         {
-            _pyObject = pyObject;
+            _pyObject = Python.GetNamelessObject(pyObject);
         }
 
         public unsafe T this[params long[] indices]
@@ -72,117 +72,74 @@ namespace NConstrictor
             }
         }
 
-        public static implicit operator PyArray<T>(Array array)
+        public TArray ToNdArray<TArray>()
         {
-            long[] dims = new long[array.Rank];
-
-            for (int i = 0; i < dims.Length; i++)
-            {
-                dims[i] = array.GetLength(i);
-            }
-
-            GCHandle handle;
-            if (array.GetType().GetElementType() == typeof(T))
-            {
-                handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            }
-            else
-            {
-                Array tmp = Array.CreateInstance(typeof(T), dims);
-                Array.Copy(array, tmp, array.Length);
-                handle = GCHandle.Alloc(tmp, GCHandleType.Pinned);
-            }
-
-            PyObject result = Python.GetNamelessObject(NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype(typeof(T)), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero));
-
-            handle.Free();
-
-            return Unsafe.As<PyObject, PyArray<T>>(ref result);
+            return new PyBuffer<T>(_pyObject).GetNdArray<TArray>();
         }
 
-        static IntPtr GetDtype(Type t)
-        {
-            if (t == typeof(int))
-            {
-                return Dtype.Int32;
-            }
-            else if (t == typeof(float))
-            {
-                return Dtype.Float32;
-            }
-            else if (t == typeof(double))
-            {
-                return Dtype.Float64;
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public Array ToArray()
+        public T[] ToArray()
         {
             return new PyBuffer<T>(_pyObject).GetArray();
         }
 
-        public static PyArray<T> operator +(PyArray<T> x, PyArray<T> y)
+        public static PyObject operator +(PyArray<T> x, PyArray<T> y)
         {
             return PyNumber.Add(x, y);
         }
 
-        public static PyArray<T> operator -(PyArray<T> x, PyArray<T> y)
+        public static PyObject operator -(PyArray<T> x, PyArray<T> y)
         {
             return PyNumber.Subtract(x, y);
         }
 
-        public static PyArray<T> operator *(PyArray<T> x, PyArray<T> y)
+        public static PyObject operator *(PyArray<T> x, PyArray<T> y)
         {
             return PyNumber.Multiply(x, y);
         }
 
-        public static PyArray<T> operator /(PyArray<T> x, PyArray<T> y)
+        public static PyObject operator /(PyArray<T> x, PyArray<T> y)
         {
             return PyNumber.TrueDivide(x, y);
         }
 
         // PyObject : PyArray
-        public static PyArray<T> operator +(PyObject x, PyArray<T> y)
+        public static PyObject operator +(PyObject x, PyArray<T> y)
         {
             return PyNumber.Add(x, y);
         }
 
-        public static PyArray<T> operator -(PyObject x, PyArray<T> y)
+        public static PyObject operator -(PyObject x, PyArray<T> y)
         {
             return PyNumber.Subtract(x, y);
         }
 
-        public static PyArray<T> operator *(PyObject x, PyArray<T> y)
+        public static PyObject operator *(PyObject x, PyArray<T> y)
         {
             return PyNumber.Multiply(x, y);
         }
 
-        public static PyArray<T> operator /(PyObject x, PyArray<T> y)
+        public static PyObject operator /(PyObject x, PyArray<T> y)
         {
             return PyNumber.TrueDivide(x, y);
         }
 
         // PyArray : PyObject
-        public static PyArray<T> operator +(PyArray<T> x, PyObject y)
+        public static PyObject operator +(PyArray<T> x, PyObject y)
         {
             return PyNumber.Add(x, y);
         }
 
-        public static PyArray<T> operator -(PyArray<T> x, PyObject y)
+        public static PyObject operator -(PyArray<T> x, PyObject y)
         {
             return PyNumber.Subtract(x, y);
         }
 
-        public static PyArray<T> operator *(PyArray<T> x, PyObject y)
+        public static PyObject operator *(PyArray<T> x, PyObject y)
         {
             return PyNumber.Multiply(x, y);
         }
 
-        public static PyArray<T> operator /(PyArray<T> x, PyObject y)
+        public static PyObject operator /(PyArray<T> x, PyObject y)
         {
             return PyNumber.TrueDivide(x, y);
         }
@@ -200,7 +157,7 @@ namespace NConstrictor
 
         public void Dispose()
         {
-            Py.DecRef(_pyObject);
+            Py.Clear(_pyObject);
         }
     }
 }

@@ -31,22 +31,22 @@ namespace NConstrictor
         [DllImport(@"Python3.dll", EntryPoint = "PyObject_RichCompareBool", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int RichCompareBool(PyObject o1, PyObject o2, int opid);
 
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(@"Python3.dll", EntryPoint = "PyObject_Size", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern long Size(PyObject o);
+
         private readonly IntPtr _pyObject;
 
         public PyObject this[string name]
         {
             get
             {
-                PyObject result = PyObject.GetAttrString(_pyObject, name);
-                Py.DecRef(_pyObject);
-
-                return result;
+                return GetAttrString(_pyObject, name);
             }
 
             set
             {
-                PyObject.SetAttrString(_pyObject, name, value);
-                Py.DecRef(value);
+                SetAttrString(_pyObject, name, value);
             }
         }
 
@@ -78,6 +78,44 @@ namespace NConstrictor
         public static implicit operator PyObject(long l)
         {
             return PyLong.FromLong(l);
+        }
+
+        public static implicit operator PyObject(Array array)
+        {
+            long[] dims = new long[array.Rank];
+
+            for (int i = 0; i < dims.Length; i++)
+            {
+                dims[i] = array.GetLength(i);
+            }
+
+            GCHandle handle = GCHandle.Alloc(array, GCHandleType.Pinned);
+            PyObject result = NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype(array), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero);
+            handle.Free();
+
+            return result;
+        }
+
+        static IntPtr GetDtype(Array array)
+        {
+            Type t = array.GetType().GetElementType();
+
+            if (t == typeof(int))
+            {
+                return Dtype.Int32;
+            }
+            else if (t == typeof(float))
+            {
+                return Dtype.Float32;
+            }
+            else if (t == typeof(double))
+            {
+                return Dtype.Float64;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public static PyObject operator +(PyObject x, PyObject y)
@@ -158,7 +196,7 @@ namespace NConstrictor
 
         public void Dispose()
         {
-            Py.DecRef(_pyObject);
+            Py.Clear(_pyObject);
         }
     }
 }

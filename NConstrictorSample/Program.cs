@@ -21,7 +21,7 @@ namespace NConstrictorSample
             };
 
             //arrayの内容をPythonに送信
-            PyArray<TestType> x = array;
+            PyArray<TestType> x = new PyArray<TestType>(array);
 
             //pythonで受信したxを表示する
             Python.Print(x);
@@ -82,10 +82,11 @@ namespace NConstrictorSample
             Python.Print(x);
 
             //計算したxをC#で取得
-            TestType[,] destArrayX = (TestType[,])x.ToArray();
+            TestType[,] destArrayX = x.ToNdArray<TestType[,]>();
 
             //Pythonで宣言したyをC#で取得
-            TestType[,] destArrayY = (TestType[,])((PyArray<TestType>)py["y"]).ToArray();
+            PyArray<TestType> pyNdArrayBuffer = py["y"];
+            TestType[,] destArrayY = pyNdArrayBuffer.ToNdArray<TestType[,]>();
 
             //取得したXの中身を表示
             Console.WriteLine("\n> Console.WriteLine(x[i, j]) from C#");
