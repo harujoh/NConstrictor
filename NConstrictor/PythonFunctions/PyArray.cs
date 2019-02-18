@@ -149,32 +149,10 @@ namespace NConstrictor
             }
 
             GCHandle handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            PyObject result = Python.GetNamelessObject(NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, GetDtype(array), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero));
+            PyObject result = Python.GetNamelessObject(NumPy.PyArrayNewFromDescr(NumPy.PyArrayType, Dtype.GetDtype(array.GetType().GetElementType()), array.Rank, dims, null, handle.AddrOfPinnedObject(), NpConsts.NPY_ARRAY_CARRAY, IntPtr.Zero));
             handle.Free();
 
             return Unsafe.As<PyObject, PyArray<T>>(ref result);
-        }
-
-        static IntPtr GetDtype(Array array)
-        {
-            Type t = array.GetType().GetElementType();
-
-            if (t == typeof(int))
-            {
-                return Dtype.Int32;
-            }
-            else if (t == typeof(float))
-            {
-                return Dtype.Float32;
-            }
-            else if (t == typeof(double))
-            {
-                return Dtype.Float64;
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
         }
 
         public static implicit operator PyObject(PyArray<T> pyArray)
