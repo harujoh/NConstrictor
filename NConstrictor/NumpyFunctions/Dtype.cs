@@ -47,6 +47,50 @@ namespace NConstrictor
             Timedelta64 = NumPy.PyArrayDescrFromType(22);
         }
 
+        public static IntPtr GetDtype<T>()
+        {
+            if (typeof(T) == typeof(Int32))
+            {
+                return Dtype.Int32;
+            }
+            else if (typeof(T) == typeof(UInt32))
+            {
+                return Dtype.Uint32;
+            }
+            else if (typeof(T) == typeof(Int16))
+            {
+                return Dtype.Int16;
+            }
+            else if (typeof(T) == typeof(UInt16))
+            {
+                return Dtype.Uint16;
+            }
+            else if (typeof(T) == typeof(Int64))
+            {
+                return Dtype.Int64;
+            }
+            else if (typeof(T) == typeof(UInt64))
+            {
+                return Dtype.Uint64;
+            }
+            else if (typeof(T) == typeof(Single))
+            {
+                return Dtype.Float32;
+            }
+            else if (typeof(T) == typeof(Double))
+            {
+                return Dtype.Float64;
+            }
+            else if (typeof(T) == typeof(Boolean))
+            {
+                return Dtype.Bool;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public static IntPtr GetDtype(Type t)
         {
             if (t == typeof(Int32))
@@ -81,7 +125,7 @@ namespace NConstrictor
             {
                 return Dtype.Float64;
             }
-            else if (t == typeof(bool))
+            else if (t == typeof(Boolean))
             {
                 return Dtype.Bool;
             }
