@@ -28,6 +28,10 @@ namespace NConstrictor
         public static extern PyObject CallObject(PyObject callableObject, PyObject args);
 
         [SuppressUnmanagedCodeSecurity]
+        [DllImport(@"Python3.dll", EntryPoint = "PyObject_Call", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern PyObject Call(PyObject callableObject, PyObject args, PyObject kw);
+
+        [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyObject_RichCompareBool", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern int RichCompareBool(PyObject o1, PyObject o2, int opid);
 
@@ -53,6 +57,11 @@ namespace NConstrictor
         public PyObject Call(params PyObject[] argNames)
         {
             return CallObject(_pyObject, PyTuple.Pack(argNames));
+        }
+
+        public PyObject Call(PyObject[] argNames, PyObject kw)
+        {
+            return Call(_pyObject, PyTuple.Pack(argNames), kw);
         }
 
         public static implicit operator PyObject(IntPtr i)

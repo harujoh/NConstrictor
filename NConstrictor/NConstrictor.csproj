@@ -62,6 +62,7 @@
     <Compile Include="PythonFunctions\PyBuffer.cs" />
     <Compile Include="PythonFunctions\Py.cs" />
     <Compile Include="PythonFunctions\PyTypes\PyBool.cs" />
+    <Compile Include="PythonFunctions\PyTypes\PyDict.cs" />
     <Compile Include="PythonFunctions\RawStructure\PyBufferRaw.cs" />
     <Compile Include="PythonFunctions\PyCapsule.cs" />
     <Compile Include="PythonFunctions\PyConsts.cs" />
