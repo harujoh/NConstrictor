@@ -72,6 +72,11 @@ namespace NConstrictor
             }
         }
 
+        public PyArray<T> Copy()
+        {
+            return _pyObject["copy"].Call();
+        }
+
         public static PyObject operator +(PyArray<T> x, PyArray<T> y)
         {
             return PyNumber.Add(x, y);

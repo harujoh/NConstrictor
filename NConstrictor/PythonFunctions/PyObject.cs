@@ -25,11 +25,11 @@ namespace NConstrictor
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyObject_CallObject", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern PyObject CallObject(PyObject callableObject, PyObject args);
+        internal static extern PyObject CallObject(PyObject callableObject, PyObject args);
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyObject_Call", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern PyObject Call(PyObject callableObject, PyObject args, PyObject kw);
+        private static extern PyObject Call(PyObject callableObject, PyObject args, PyObject kw);
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyObject_RichCompareBool", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -59,9 +59,14 @@ namespace NConstrictor
             return CallObject(_pyObject, PyTuple.Pack(argNames));
         }
 
-        public PyObject Call(PyObject[] argNames, PyObject kw)
+        public PyObject Call(PyObject[] argNames, PyDict kw)
         {
             return Call(_pyObject, PyTuple.Pack(argNames), kw);
+        }
+
+        public PyObject Copy()
+        {
+            return this["copy"].Call();
         }
 
         public static implicit operator PyObject(IntPtr i)
