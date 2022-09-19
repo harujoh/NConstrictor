@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Text;
 
 namespace NConstrictor
 {
@@ -37,7 +38,7 @@ namespace NConstrictor
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyObject_Size", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern long Size(PyObject o);
+        public static extern long Size(PyObject o);//Py_ssize_t PyObject_Size(PyObject *o)¶
 
         private readonly IntPtr _pyObject;
 
@@ -45,7 +46,9 @@ namespace NConstrictor
         {
             get
             {
-                return GetAttrString(_pyObject, name);
+                var result = GetAttrString(_pyObject, name);
+                if (result == IntPtr.Zero) throw new Exception(name+"は存在しない名称です");
+                return result;
             }
 
             set
@@ -72,6 +75,24 @@ namespace NConstrictor
         public static implicit operator PyObject(IntPtr i)
         {
             return Unsafe.As<IntPtr, PyObject>(ref i);
+        }
+
+        public static explicit operator string(PyObject o)
+        {
+            var target = o;
+            var b = PyUnicode.EncodeFSDefault(o);
+
+            if(b != IntPtr.Zero)//Intptr.ZeroならUnicodeではない
+            {
+                target = b;
+            }
+
+            long len = PyBytes.Size(target);
+            byte[] c = new byte[len];
+            var cPtr = PyBytes.AsString(target);
+            Marshal.Copy(cPtr, c, 0, c.Length);
+
+            return Encoding.UTF8.GetString(c);
         }
 
         public static implicit operator PyObject(string str)
@@ -173,6 +194,11 @@ namespace NConstrictor
         public void Dispose()
         {
             Py.Clear(_pyObject);
+        }
+
+        public override string ToString()
+        {
+            return (string)this;
         }
     }
 }

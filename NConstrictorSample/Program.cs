@@ -13,6 +13,9 @@ namespace NConstrictorSample
         {
             Python py = new Python();
 
+            var sys = PyImport.AddModule("sys");
+            Console.WriteLine("Python version : " + sys["version"] + Environment.NewLine);
+
             TestType[,] array =
             {
                 {0,  1,  2,  3},
