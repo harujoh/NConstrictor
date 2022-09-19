@@ -14,7 +14,9 @@ namespace NConstrictorSample
             Python py = new Python();
 
             var sys = PyImport.AddModule("sys");
-            Console.WriteLine("Python version : " + sys["version"] + Environment.NewLine);
+            Console.WriteLine("Python version : " + sys["version"]);
+            var vers = PyTuple.UnPack(sys["version_info"]);
+            Console.WriteLine($"sys.version_info(major = {(long)vers[0]}, minor = {(long)vers[1]}, micro = {(long)vers[2]}, releaselevel = '{vers[3]}', serial = {(long)vers[4]})" + Environment.NewLine);
 
             TestType[,] array =
             {

@@ -77,6 +77,16 @@ namespace NConstrictor
             return Unsafe.As<IntPtr, PyObject>(ref i);
         }
 
+        public static explicit operator long(PyObject o)
+        {
+            return PyLong.AsLong(o);
+        }
+
+        public static explicit operator double(PyObject o)
+        {
+            return PyFloat.AsDouble(o);
+        }
+
         public static explicit operator string(PyObject o)
         {
             var target = o;
