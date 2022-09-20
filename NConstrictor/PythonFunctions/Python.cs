@@ -6,6 +6,10 @@ namespace NConstrictor
     public class Python : IDisposable
     {
         public static PyObject Main;
+
+        public static PyObject Sys;
+        public static PyObject Builtins;
+
         private static Dictionary<PyObject, string> _names = new Dictionary<PyObject, string>();
         private static ulong _nameCounter = 0;
 
@@ -20,6 +24,11 @@ namespace NConstrictor
             NumPy.Initialize();
 
             Main = PyImport.AddModule("__main__");
+
+            Sys = PyImport.AddModule("sys");
+            Builtins = PyImport.AddModule("builtins");
+
+            Py.None = Builtins["None"];
         }
 
         public PyObject this[string name]

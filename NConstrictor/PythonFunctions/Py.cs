@@ -25,12 +25,11 @@ namespace NConstrictor
         [DllImport(@"Python3.dll", EntryPoint = "Py_BuildValue", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern PyObject BuildValue(string format);
 
-        public static readonly PyObject None;
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(@"Python3.dll", EntryPoint = "Py_NewRef", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern PyObject NewRef(PyObject o);
 
-        static Py()
-        {
-            None = Py.BuildValue("");
-        }
+        public static PyObject None;
 
         public static void Clear(PyObject o)
         {
