@@ -11,11 +11,7 @@ namespace NConstrictorSample
     {
         static void Main(string[] args)
         {
-            Python py = new Python();
-
-            Console.WriteLine("Python version : " + Python.Sys["version"]);
-            var vers = PyTuple.UnPack(Python.Sys["version_info"]);
-            Console.WriteLine($"sys.version_info(major = {(long)vers[0]}, minor = {(long)vers[1]}, micro = {(long)vers[2]}, releaselevel = '{vers[3]}', serial = {(long)vers[4]})" + Environment.NewLine);
+            Python.Initialize(true);
 
             TestType[,] array =
             {
@@ -39,7 +35,7 @@ namespace NConstrictorSample
             Python.Print(x);
 
             //xをPythonのｙに転送
-            py["y"] = x;
+            Python.Main["y"] = x;
 
             Console.WriteLine("\n> pyBuffer += 1000 From C#");
 
@@ -55,7 +51,7 @@ namespace NConstrictorSample
             dynamic pyTest = new PyDynamicModule("pytest");
 
             //test内の関数calcを呼び出す
-            x = pyTest.calc(x);
+            x = (PyArray<TestType>)pyTest.calc(x);
 
             //関数の結果を表示する
             Python.Print(x);
@@ -76,21 +72,20 @@ namespace NConstrictorSample
             //セット用の配列を作る
             TestType[] setArray = { 1111, 2222, 3333, 4444 };
 
-            //Pythonの値をC#から変更するクラスを作成
-            PyArray<TestType[]> pyArrayBuffer = new PyArray<TestType[]>(x);
+            //Pythonの値をC#から変更できるようにキャスト(二次元→一次元の添字が使えるようにする)
+            PyArray<TestType[]> pyArrayBuffer = (PyArray<TestType[]>)x;
 
             //x[1]にsetArrayを設定する
             pyArrayBuffer[1] = setArray;
 
-            //加算したxを表示する
+            //設定したxを表示する
             Python.Print(x);
 
             //計算したxをC#で取得
             TestType[,] destArrayX = (TestType[,])x;
 
             //Pythonで宣言したyをC#で取得
-            PyArray<TestType> pyNdArrayBuffer = py["y"];
-            TestType[,] destArrayY = (TestType[,])pyNdArrayBuffer;
+            TestType[,] destArrayY = (PyArray<TestType>)Python.Main["y"];//PyObject->PyArray->Array
 
             //取得したXの中身を表示
             Console.WriteLine("\n> Console.WriteLine(x[i, j]) from C#");

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security;
 
 namespace NConstrictor
 {
-    public struct PyList : IDisposable
+    public class PyList : List<PyObject>
     {
         [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyList_New", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -32,10 +30,35 @@ namespace NConstrictor
         [DllImport(@"Python3.dll", EntryPoint = "PyList_AsTuple", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern PyObject PyListAsTuple(PyObject list);
 
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(@"Python3.dll", EntryPoint = "PyList_Size", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int PyListSize(PyObject list);
+
 
         private readonly PyObject _pyObject;
 
-        public PyList(PyObject[] items)
+        //キャスト用
+        private PyList(PyObject pyObject)
+        {
+            _pyObject = pyObject;
+        }
+
+        public PyList()
+        {
+            _pyObject = PyList.PyListNew(0);
+        }
+
+        public PyList(long len)
+        {
+            _pyObject = PyList.PyListNew(len);
+        }
+
+        public PyList(int len)
+        {
+            _pyObject = PyList.PyListNew(len);
+        }
+
+        public PyList(params PyObject[] items)
         {
             _pyObject = PyList.PyListNew(items.Length);
 
@@ -45,12 +68,7 @@ namespace NConstrictor
             }
         }
 
-        public PyList(long len)
-        {
-            _pyObject = PyList.PyListNew(len);
-        }
-
-        public PyObject this[long index]
+        public PyObject this[int index]
         {
             get
             {
@@ -63,12 +81,14 @@ namespace NConstrictor
             }
         }
 
-        public void Insert(long index, PyObject item)
+        public int Count => PyListSize(_pyObject);
+
+        public void Insert(int index, PyObject item)
         {
             PyListInsert(_pyObject, index, item);
         }
 
-        public void Append(PyObject item)
+        public void Add(PyObject item)
         {
             PyListAppend(_pyObject, item);
         }
@@ -78,11 +98,56 @@ namespace NConstrictor
             return PyListAsTuple(_pyObject);
         }
 
+        public static implicit operator PyObject(PyList pyArray)
+        {
+            return pyArray._pyObject;
+        }
+
+        public static explicit operator PyList(PyObject pyObject)
+        {
+            return new PyList(pyObject);
+        }
+
         public static implicit operator PyList(PyObject[] pyObjects)
         {
             return new PyList(pyObjects);
         }
 
+        public static implicit operator PyList(int[] pyObjects)
+        {
+            PyList result = new PyList(pyObjects.Length);
+
+            for (int i = 0; i < pyObjects.Length; i++)
+            {
+                PyListSetItem(result._pyObject, i, pyObjects[i]);
+            }
+
+            return result;
+        }
+
+        public static implicit operator PyList(float[] pyObjects)
+        {
+            PyList result = new PyList(pyObjects.Length);
+
+            for (int i = 0; i < pyObjects.Length; i++)
+            {
+                PyListSetItem(result._pyObject, i, pyObjects[i]);
+            }
+
+            return result;
+        }
+
+        public static implicit operator PyList(double[] pyObjects)
+        {
+            PyList result = new PyList(pyObjects.Length);
+
+            for (int i = 0; i < pyObjects.Length; i++)
+            {
+                PyListSetItem(result._pyObject, i, pyObjects[i]);
+            }
+
+            return result;
+        }
 
         public void Dispose()
         {

@@ -38,7 +38,7 @@ namespace NConstrictor
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyObject_Size", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern long Size(PyObject o);//Py_ssize_t PyObject_Size(PyObject *o)¶
+        public static extern long Size(PyObject o);//Py_ssize_t PyObject_Size(PyObject *o)
 
         private readonly IntPtr _pyObject;
 
@@ -57,14 +57,29 @@ namespace NConstrictor
             }
         }
 
-        public PyObject Call(params PyObject[] argNames)
+        public PyObject Call(params PyObject[] args)
         {
-            return CallObject(_pyObject, PyTuple.Pack(argNames));
+            return CallObject(_pyObject, PyTuple.Pack(args));
         }
 
-        public PyObject Call(PyObject[] argNames, PyDict kw)
+        public PyObject Call(PyDict kw)
         {
-            return Call(_pyObject, PyTuple.Pack(argNames), kw);
+            return Call(_pyObject, PyTuple.Pack(), kw);
+        }
+
+        public PyObject Call(PyTuple args, PyDict kw)
+        {
+            return Call(_pyObject, args, kw);
+        }
+
+        public PyObject Call(PyObject args, PyDict kw)
+        {
+            return Call(_pyObject, PyTuple.Pack(args), kw);
+        }
+
+        public PyObject Call(PyObject[] args, PyDict kw)
+        {
+            return Call(_pyObject, PyTuple.Pack(args), kw);
         }
 
         public PyObject Copy()
@@ -90,19 +105,31 @@ namespace NConstrictor
         public static explicit operator string(PyObject o)
         {
             var target = o;
-            var b = PyUnicode.EncodeFSDefault(o);
-
-            if(b != IntPtr.Zero)//Intptr.ZeroならUnicodeではない
+            try
             {
-                target = b;
+                var b = PyUnicode.EncodeFSDefault(o);
+
+                if (b != IntPtr.Zero)
+                {
+                    target = b;
+                }
+                else
+                {
+                    //Intptr.ZeroなのでUnicodeではないため、そのまま使いたいけどそうもいかない…
+                    return "Non Unicode String Value";
+                }
+
+                long len = PyBytes.Size(target);
+                byte[] c = new byte[len];
+                var cPtr = PyBytes.AsString(target);
+                Marshal.Copy(cPtr, c, 0, c.Length);
+
+                return Encoding.UTF8.GetString(c);
             }
-
-            long len = PyBytes.Size(target);
-            byte[] c = new byte[len];
-            var cPtr = PyBytes.AsString(target);
-            Marshal.Copy(cPtr, c, 0, c.Length);
-
-            return Encoding.UTF8.GetString(c);
+            catch (Exception e)
+            {
+                return e.Message + ":Non Unicode String Value";
+            }
         }
 
         public static implicit operator PyObject(string str)

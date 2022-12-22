@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 
 namespace NConstrictor
 {
     public class PyDynamic : DynamicObject
     {
-        private PyObject _pyObject;
+        public PyObject _pyObject;
 
         public PyDynamic(PyObject pyObject)
         {
@@ -15,41 +16,96 @@ namespace NConstrictor
         // メンバ呼び出し
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
-            PyObject tuppleArgs = PyTuple.New(args.Length);
+            List<PyObject> pyObjects = new List<PyObject>();
 
-            for (int i = 0; i < args.Length; i++)
+            if (args.Length == 0)//引数なし
             {
-                if (args[i] is int[] intArray)
+                result = _pyObject[binder.Name].Call();
+            }
+            else
+            {
+                bool hasDict = args[args.Length - 1] is PyDict;
+                int argOffset = hasDict ? 1 : 0;
+
+                for (int i = 0; i < args.Length - argOffset; i++)
                 {
-                    PyTuple.SetItem(tuppleArgs, i, (PyArray<int>)intArray);
+                    if (args[i] is int[] intArray)
+                    {
+                        pyObjects.Add((PyArray<int>)intArray);
+                    }
+                    else if (args[i] is float[] floatArray)
+                    {
+                        pyObjects.Add((PyArray<float>)floatArray);
+                    }
+                    else if (args[i] is double[] doubleArray)
+                    {
+                        pyObjects.Add((PyArray<double>)doubleArray);
+                    }
+                    else if (args[i] is byte[] byteArray)
+                    {
+                        pyObjects.Add((PyArray<byte>)byteArray);
+                    }
+                    else if (args[i] is Dictionary<PyObject, PyObject> dictionary)
+                    {
+                        pyObjects.Add((PyDict)dictionary);
+                    }
+                    else if (args[i] is PyArray<float> floatPyArray)
+                    {
+                        pyObjects.Add(floatPyArray);
+                    }
+                    else if (args[i] is PyArray<double> doublePyArray)
+                    {
+                        pyObjects.Add(doublePyArray);
+                    }
+                    else if (args[i] is PyArray<int> intPyArray)
+                    {
+                        pyObjects.Add(intPyArray);
+                    }
+                    else if (args[i] is PyArray<byte> bytePyArray)
+                    {
+                        pyObjects.Add(bytePyArray);
+                    }
+                    else if (args[i] is PyList pyList)
+                    {
+                        pyObjects.Add(pyList);
+                    }
+                    else if (args[i] is PyDict)
+                    {
+                        throw new Exception("引数の順番が間違っています");
+                    }
+                    else
+                    {
+                        pyObjects.Add((PyObject)args[i]);
+                    }
                 }
-                else if (args[i] is float[] floatArray)
+
+                PyTuple tuppleArgs = PyTuple.New(pyObjects.Count);
+                for (int i = 0; i < pyObjects.Count; i++)
                 {
-                    PyTuple.SetItem(tuppleArgs, i, (PyArray<float>)floatArray);
+                    tuppleArgs[i] = pyObjects[i];
                 }
-                else if (args[i] is double[] doubleArray)
+
+                //最後の引数が辞書か？
+                if (hasDict)
                 {
-                    PyTuple.SetItem(tuppleArgs, i, (PyArray<double>)doubleArray);
-                }
-                else if (args[i] is PyArray<float> floatPyArray)
-                {
-                    PyTuple.SetItem(tuppleArgs, i, floatPyArray);
-                }
-                else if (args[i] is PyArray<double> doublePyArray)
-                {
-                    PyTuple.SetItem(tuppleArgs, i, doublePyArray);
-                }
-                else if (args[i] is PyArray<int> intPyArray)
-                {
-                    PyTuple.SetItem(tuppleArgs, i, intPyArray);
+                    //辞書以外の引数があるか？
+                    if(args.Length > 1)
+                    {
+                        //引数+辞書
+                        result = _pyObject[binder.Name].Call(tuppleArgs, (PyDict)args[args.Length - 1]);
+                    }
+                    else
+                    {
+                        //辞書のみ
+                        result = _pyObject[binder.Name].Call((PyDict)args[args.Length - 1]);
+                    }
                 }
                 else
                 {
-                    PyTuple.SetItem(tuppleArgs, i, (PyObject)args[i]);
+                    //辞書なし
+                    result = PyObject.CallObject(_pyObject[binder.Name], tuppleArgs);
                 }
             }
-
-            result = PyObject.CallObject(_pyObject[binder.Name], tuppleArgs);
 
             return true;
         }
@@ -95,14 +151,24 @@ namespace NConstrictor
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             Py.IncRef(_pyObject);
-            result = _pyObject[binder.Name];
+            result = new PyDynamic(_pyObject[binder.Name]);
 
             return true;
+        }
+
+        public static implicit operator PyDynamic(PyObject pyObject)
+        {
+            return new PyDynamic(pyObject);
         }
 
         public static implicit operator PyObject(PyDynamic main)
         {
             return main._pyObject;
+        }
+
+        public override string ToString()
+        {
+            return _pyObject.ToString();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Security;
 
 namespace NConstrictor
@@ -15,7 +16,19 @@ namespace NConstrictor
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyImport_ImportModule", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern PyObject ImportModule(string name);
+        public static extern PyObject PyImport_ImportModule(string name);
+
+        public static PyObject ImportModule(string name)
+        {
+            var module = PyImport_ImportModule(name);
+
+            if (module == IntPtr.Zero)
+            {
+                throw new Exception(name + ": failed to import");
+            }
+
+            return module;
+        }
 
         public static PyObject Import(string name)
         {
