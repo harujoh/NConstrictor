@@ -29,9 +29,17 @@ namespace NConstrictor
 
                 for (int i = 0; i < args.Length - argOffset; i++)
                 {
-                    if (args[i] is int[] intArray)
+                    if (args[i] is IntPtr intptr)
+                    {
+                        pyObjects.Add(intptr);
+                    }
+                    else if (args[i] is int[] intArray)
                     {
                         pyObjects.Add((PyArray<int>)intArray);
+                    }
+                    else if (args[i] is long[] longArray)
+                    {
+                        pyObjects.Add((PyArray<long>)longArray);
                     }
                     else if (args[i] is float[] floatArray)
                     {

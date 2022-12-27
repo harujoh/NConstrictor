@@ -39,5 +39,15 @@
         public const int BUF_READ = 0x100;
         public const int BUF_WRITE = 0x200;
         public const int BUF_SHADOW = 0x400;
+
+        internal const int NPY_MAXDIMS = 32;
+        internal const int NPY_MAXARGS = 32;
+    }
+
+    public enum NPY_CLIPMODE
+    {
+        CLIP = 0,
+        WRAP = 1,
+        RAISE = 2
     }
 }

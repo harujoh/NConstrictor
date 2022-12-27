@@ -22,6 +22,9 @@ namespace NConstrictor
         public delegate IntPtr PyArrayGetPtrDelegate(PyObject aobj, long[] ind);
         public static PyArrayGetPtrDelegate PyArrayGetPtr;
 
+        public delegate IntPtr PyArrayTakeFromDelegate(PyObject selfArray, PyObject indices, int axis, PyObject retArray, NPY_CLIPMODE clipMode);
+        public static PyArrayTakeFromDelegate PyArrayTakeFrom;
+
         public static IntPtr PyArrayType;
 
         public static void Initialize()
@@ -58,6 +61,7 @@ namespace NConstrictor
             PyArrayFromBuffer = (PyArrayFromBufferDelegate)Marshal.GetDelegateForFunctionPointer(_pyArrayAPIs[MultiarrayFuncsAPI.PyArray_FromBuffer], typeof(PyArrayFromBufferDelegate));
             PyArrayNewFromDescr = (PyArrayNewFromDescrDelegate)Marshal.GetDelegateForFunctionPointer(_pyArrayAPIs[MultiarrayFuncsAPI.PyArray_NewFromDescr], typeof(PyArrayNewFromDescrDelegate));
             PyArrayGetPtr = (PyArrayGetPtrDelegate)Marshal.GetDelegateForFunctionPointer(_pyArrayAPIs[MultiarrayFuncsAPI.PyArray_GetPtr], typeof(PyArrayGetPtrDelegate));
+            PyArrayTakeFrom = (PyArrayTakeFromDelegate)Marshal.GetDelegateForFunctionPointer(_pyArrayAPIs[MultiarrayFuncsAPI.PyArray_TakeFrom], typeof(PyArrayTakeFromDelegate));
 
             PyArrayType = _pyArrayAPIs[MultiarrayTypesAPI.PyArray_Type];
         }

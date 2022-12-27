@@ -125,6 +125,18 @@ namespace NConstrictor
             return result;
         }
 
+        public static implicit operator PyList(long[] pyObjects)
+        {
+            PyList result = new PyList(pyObjects.Length);
+
+            for (int i = 0; i < pyObjects.Length; i++)
+            {
+                PyListSetItem(result._pyObject, i, pyObjects[i]);
+            }
+
+            return result;
+        }
+
         public static implicit operator PyList(float[] pyObjects)
         {
             PyList result = new PyList(pyObjects.Length);

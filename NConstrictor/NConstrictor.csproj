@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyVersion>0.12.1</AssemblyVersion>
     <VersionPrefix>0.12.1</VersionPrefix>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>

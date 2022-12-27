@@ -87,6 +87,30 @@ namespace NConstrictor
             return this["copy"].Call();
         }
 
+        public static PyObject GetPyObject<T>(T value)
+        {
+            if(value is int i)
+            {
+                return i;
+            } 
+            else if(value is long l)
+            {
+                return l;
+            }
+            else if (value is float f)
+            {
+                return f;
+            }
+            else if (value is double d)
+            {
+                return d;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public static implicit operator PyObject(IntPtr i)
         {
             return Unsafe.As<IntPtr, PyObject>(ref i);
@@ -150,6 +174,11 @@ namespace NConstrictor
         public static implicit operator PyObject(long l)
         {
             return PyLong.FromLong(l);
+        }
+
+        public static PyObject operator -(PyObject x)
+        {
+            return PyNumber.Negative(x);
         }
 
         public static PyObject operator +(PyObject x, PyObject y)

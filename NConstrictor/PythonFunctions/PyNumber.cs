@@ -20,5 +20,9 @@ namespace NConstrictor
         [SuppressUnmanagedCodeSecurity]
         [DllImport(@"Python3.dll", EntryPoint = "PyNumber_TrueDivide", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         public static extern PyObject TrueDivide(PyObject o1, PyObject o2);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(@"Python3.dll", EntryPoint = "PyNumber_Negative", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern PyObject Negative(PyObject o);
     }
 }
