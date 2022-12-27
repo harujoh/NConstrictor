@@ -7,7 +7,7 @@ namespace NConstrictorSample
     {
         static void Main(string[] args)
         {
-            Python.Initialize();
+            Python.Initialize(true);
 
             PyArray<float> x = new[,]
             {
@@ -23,12 +23,15 @@ namespace NConstrictorSample
             x += 50.0f;
             Python.Print(x);
 
-            x += new[] { 100.0f, 200.0f, 300.0f, 400.0f };
+            x += new[]{ 100.0f, 200.0f, 300.0f, 400.0f };
             Python.Print(x);
 
-            PyArray<float[]> pyArrayBuffer = new PyArray<float[]>(x);
-            pyArrayBuffer[1] = new[] { 10.0f, 20.0f, 30.0f, 40.0f };
+            PyArray<float[]> pyArray = (PyArray<float[]>)x;
+            pyArray[1] = new[] { 10.0f, 20.0f, 30.0f, 40.0f };
             Python.Print(x);
+
+            PyArray<float> y = x[1..3, 1..3];
+            Python.Print(y);
 
             Console.Read();
         }
