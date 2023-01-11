@@ -34,6 +34,7 @@ namespace NConstrictor
                 }
 
                 Array result = Array.CreateInstance(typeof(T), lengthArray);
+
                 for (int i = 0; i < count; i++)
                 {
                     result.SetValue(this[sourceIndex], destIndex);
@@ -55,8 +56,6 @@ namespace NConstrictor
                     }
                 }
 
-
-                //return PyArray.TakeFrom(this,, PyConsts.NPY_MAXDIMS, null, NPY_CLIPMODE.RAISE);
                 return result;
             }
 
@@ -193,8 +192,6 @@ namespace NConstrictor
         {
             return (PyArray<T>)PyNumber.TrueDivide(PyObject.GetPyObject(x), y);
         }
-
-
 
         // PyObject : PyArray
         public static PyObject operator +(PyObject x, PyArray<T> y)
