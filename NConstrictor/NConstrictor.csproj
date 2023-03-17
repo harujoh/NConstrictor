@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyVersion>0.13.1</AssemblyVersion>
-    <VersionPrefix>0.13.1</VersionPrefix>
+    <AssemblyVersion>0.13.2</AssemblyVersion>
+    <VersionPrefix>0.13.2</VersionPrefix>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Description>Operate Python from C#</Description>
