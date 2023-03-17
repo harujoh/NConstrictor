@@ -123,9 +123,33 @@ namespace NConstrictor
         {
             Py.IncRef(_pyObject);
 
-            if (value is int[] intArray)
+            if (value is int intValue)
+            {
+                _pyObject[binder.Name] = intValue;
+            }
+            else if (value is float floatValue)
+            {
+                _pyObject[binder.Name] = floatValue;
+            }
+            else if (value is double doubleValue)
+            {
+                _pyObject[binder.Name] = doubleValue;
+            }
+            else if (value is long longValue)
+            {
+                _pyObject[binder.Name] = longValue;
+            }
+            else if (value is bool boolValue)
+            {
+                _pyObject[binder.Name] = boolValue;
+            }
+            else if (value is int[] intArray)
             {
                 _pyObject[binder.Name] = (PyArray<int>)intArray;
+            }
+            else if (value is long[] longArray)
+            {
+                _pyObject[binder.Name] = (PyArray<long>)longArray;
             }
             else if (value is float[] floatArray)
             {
@@ -146,6 +170,10 @@ namespace NConstrictor
             else if (value is PyArray<int> intPyArray)
             {
                 _pyObject[binder.Name] = intPyArray;
+            }
+            else if (value is PyArray<long> longPyArray)
+            {
+                _pyObject[binder.Name] = longPyArray;
             }
             else
             {

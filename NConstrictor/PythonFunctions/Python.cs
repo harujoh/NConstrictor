@@ -142,6 +142,7 @@ namespace NConstrictor
 
         public static string GetName(PyObject value)
         {
+            SetNamelessObject(value);
             return _names[value];
         }
 
