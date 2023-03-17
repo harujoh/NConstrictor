@@ -107,6 +107,8 @@ namespace NConstrictorSample
                 }
             }
 
+            
+            PyErr.Print();//エラーが有る場合はエラーが出力される
             Console.WriteLine("Done.");
             Console.Read();
         }
